@@ -7,7 +7,7 @@
     <meta name="description" content="Behavior Uncloning: distilling mode redirection into policy weights without inference-time steering.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,650&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
       :root {
         --ink: #17211d;
@@ -20,7 +20,7 @@
         --accent: #0c7278;
         --accent-soft: #d9eeea;
         --warning: #9a5a36;
-        --serif: "Fraunces", "Noto Serif", Iowan Old Style, Georgia, serif;
+        --serif: "Source Serif 4", "Noto Serif", Iowan Old Style, Georgia, serif;
         --sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
         --max: 1720px;
@@ -115,6 +115,15 @@
         color: var(--ink-soft);
         font-size: 1.02rem;
         line-height: 1.7;
+      }
+      .authors a {
+        color: var(--ink-soft);
+        border-bottom: 1px solid rgba(12, 114, 120, 0.28);
+      }
+      .authors a:hover {
+        color: var(--accent);
+        text-decoration: none;
+        border-bottom-color: var(--accent);
       }
       .authors sup,
       .affiliations sup {
@@ -430,18 +439,6 @@
       }
       .wide-video video { aspect-ratio: 16 / 9; object-fit: contain; }
 
-      .citation {
-        max-width: var(--narrow);
-        margin: 20px auto 0;
-        padding: 18px;
-        border-radius: 8px;
-        border: 1px solid var(--rule);
-        background: var(--card);
-        color: var(--muted);
-        font-family: var(--mono);
-        font-size: 0.88rem;
-        overflow-x: auto;
-      }
       footer {
         border-top: 1px solid var(--rule);
         padding: 28px 24px 42px;
@@ -476,7 +473,6 @@
           <a href="#method">Method</a>
           <a href="#simulation">Simulation</a>
           <a href="#robots">Real Robots</a>
-          <a href="#code">Code</a>
         </div>
       </div>
     </nav>
@@ -487,9 +483,14 @@
         <h1>Behavior Uncloning</h1>
         <p class="subtitle">Distilling Mode Redirection into Policy Weights without Inference-Time Steering</p>
         <p class="authors">
-          Hao Wang<sup>1,†</sup>, Jiuzhou Lei<sup>1</sup>, Danyou Li<sup>1</sup>,
-          Bangya Liu<sup>2</sup>, Minghui Zheng<sup>1</sup>, Manling Li<sup>3</sup>,
-          Ruohan Zhang<sup>4</sup>, Zhiwen Fan<sup>1</sup>
+          <a href="https://haohww.github.io/">Hao Wang</a><sup>1,†</sup>,
+          <a href="https://scholar.google.com/citations?hl=en&amp;user=X52xke0AAAAJ">Jiuzhou Lei</a><sup>1</sup>,
+          <a href="https://edisiondyli.github.io/">Danyou Li</a><sup>1</sup>,
+          <a href="https://github.com/NeutrinoLiu">Bangya Liu</a><sup>2</sup>,
+          <a href="https://zh.engr.tamu.edu/people-2/">Minghui Zheng</a><sup>1</sup>,
+          <a href="https://limanling.github.io/">Manling Li</a><sup>3</sup>,
+          <a href="https://ruohanzhang.com/">Ruohan Zhang</a><sup>4</sup>,
+          <a href="https://zhiwenfan.github.io/">Zhiwen Fan</a><sup>1</sup>
         </p>
         <p class="affiliations">
           <sup>1</sup>Texas A&amp;M University &nbsp;
@@ -507,13 +508,12 @@
           <span class="button disabled" aria-disabled="true">Paper coming soon</span>
           <a class="button" href="https://github.com/haohww/behavior-uncloning">Code</a>
           <a class="button secondary" href="#supplementary">Supplementary video</a>
-          <a class="button secondary" href="#citation">Citation</a>
         </div>
       </section>
 
       <section id="abstract" class="section narrow">
         <div class="section-kicker">Abstract</div>
-        <h2>Post-hoc mode control for mixed-mode robot policies.</h2>
+        <h2>Distilling mode redirection into policy weights.</h2>
         <div class="abstract">
           <p>
             Behavior-cloned policies often learn multiple behavior modes from demonstration datasets,
@@ -551,7 +551,7 @@
 
       <section id="method" class="section left">
         <div class="section-kicker">Method</div>
-        <h2>Training-time redirection, standalone deployment.</h2>
+        <h2>Differentiable mode-redirection editor.</h2>
         <p class="lead">
           MoRE treats behavior mode control as a policy editing problem. It uses mode-labeled examples
           to train a mode classifier, then distills the desired redirection into the policy weights so
@@ -582,8 +582,8 @@
       </section>
 
       <section id="simulation" class="section left">
-        <div class="section-kicker">Simulation benchmark</div>
-        <h2>Simulated rollouts show the redirected behavior modes.</h2>
+        <div class="section-kicker">Simulated Diffusion Policy Results</div>
+        <h2>Behavior uncloning redirects simulated policy rollouts.</h2>
         <p class="lead">
           In simulation, MoRE improves deployment success across Diffusion Policy benchmarks while
           keeping the policy's original sampler and control interface.
@@ -606,7 +606,7 @@
       </section>
 
       <section id="robots" class="section left">
-        <div class="section-kicker">Real robot deployment</div>
+        <div class="section-kicker">Real-Robot Deployment Results</div>
         <h2>Mode edits transfer to physical robot tasks.</h2>
         <p class="lead">
           Across four real-robot tasks with a Franka Research 3 arm, MoRE shifts rollouts toward
@@ -680,25 +680,6 @@
         </div>
       </section>
 
-      <section id="code" class="section narrow">
-        <div class="section-kicker">Code</div>
-        <h2>Compact MoRE release.</h2>
-        <p class="lead">
-          The code release contains the method-defining MoRE losses, classifier utilities,
-          a policy-agnostic trainer skeleton, a Diffusion Policy feature path, tests, and a
-          minimal synthetic example.
-        </p>
-        <div class="cta">
-          <a class="button" href="https://github.com/haohww/behavior-uncloning">Open GitHub repository</a>
-        </div>
-        <div id="citation" class="citation">
-@misc{behavior_uncloning_2026,<br>
-&nbsp;&nbsp;title = {Behavior Uncloning: Distilling Mode Redirection into Policy Weights without Inference-Time Steering},<br>
-&nbsp;&nbsp;year = {2026},<br>
-&nbsp;&nbsp;note = {Citation will be updated after public release}<br>
-}
-        </div>
-      </section>
     </main>
 
     <footer>
