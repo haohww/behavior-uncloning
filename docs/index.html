@@ -154,6 +154,7 @@
         max-width: var(--max);
         margin: 0 auto;
         padding: 54px 24px;
+        scroll-margin-top: 76px;
       }
       .section.narrow { max-width: calc(var(--narrow) + 48px); }
       .section-kicker {
@@ -180,14 +181,15 @@
       }
       .left .lead { margin-left: 0; }
 
-      .video-grid {
+      .video-grid,
+      .rollout-grid {
         display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 18px;
+        gap: 22px;
         text-align: left;
       }
+      .video-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .rollout-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .video-card,
-      .image-card,
       .stat-card,
       .method-card {
         border: 1px solid var(--rule);
@@ -206,7 +208,6 @@
         background: #e9e1ce;
       }
       .video-card h3,
-      .image-card h3,
       .stat-card h3,
       .method-card h3 {
         margin: 0;
@@ -214,11 +215,13 @@
         line-height: 1.3;
       }
       .card-body { padding: 13px 14px 15px; }
+      .rollout-grid .card-body { padding: 16px 18px 18px; }
       .card-body p {
         margin: 7px 0 0;
         color: var(--muted);
         font-size: 0.92rem;
       }
+      .rollout-grid .card-body p { font-size: 0.98rem; }
       .fs {
         position: absolute;
         right: 8px;
@@ -303,20 +306,8 @@
         white-space: nowrap;
       }
 
-      .task-grid {
-        display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 14px;
-        margin-top: 26px;
-      }
-      .image-card img {
-        width: 100%;
-        aspect-ratio: 1 / 1;
-        object-fit: cover;
-        background: #e9e1ce;
-      }
-
       .table-wrap {
+        margin-top: 26px;
         overflow-x: auto;
         border: 1px solid var(--rule);
         border-radius: 8px;
@@ -386,8 +377,8 @@
       @media (max-width: 980px) {
         h1 { white-space: normal; }
         .video-grid,
-        .highlights,
-        .task-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .rollout-grid,
+        .highlights { grid-template-columns: repeat(2, minmax(0, 1fr)); }
         .method-flow { grid-template-columns: 1fr; }
         .arrow { display: none; }
       }
@@ -396,8 +387,8 @@
         .nav-links { margin-left: 0; justify-content: flex-start; gap: 11px 16px; }
         .hero { padding-top: 42px; }
         .video-grid,
-        .highlights,
-        .task-grid { grid-template-columns: 1fr; }
+        .rollout-grid,
+        .highlights { grid-template-columns: 1fr; }
         .section { padding: 42px 18px; }
       }
     </style>
@@ -409,8 +400,8 @@
         <div class="nav-links">
           <a href="#abstract">Abstract</a>
           <a href="#method">Method</a>
+          <a href="#simulation">Simulation</a>
           <a href="#robots">Real Robots</a>
-          <a href="#results">Results</a>
           <a href="#code">Code</a>
         </div>
       </div>
@@ -429,49 +420,6 @@
           <a class="button" href="https://github.com/haohww/behavior-uncloning">Code</a>
           <a class="button secondary" href="#supplementary">Supplementary video</a>
           <a class="button secondary" href="#citation">Citation</a>
-        </div>
-
-        <div class="video-grid" aria-label="Featured robot rollouts">
-          <article class="video-card">
-            <div class="video-wrap">
-              <video class="featured-video" autoplay muted loop playsinline preload="metadata" poster="assets/images/knife_handover_poster.jpg" src="assets/videos/knife_handover.mp4"></video>
-              <button class="fs" type="button" aria-label="Fullscreen video">fullscreen</button>
-            </div>
-            <div class="card-body">
-              <h3>Knife handover</h3>
-              <p>Shift handovers toward the desired orientation.</p>
-            </div>
-          </article>
-          <article class="video-card">
-            <div class="video-wrap">
-              <video class="featured-video" autoplay muted loop playsinline preload="metadata" poster="assets/images/bottle_placement_poster.jpg" src="assets/videos/bottle_placement.mp4"></video>
-              <button class="fs" type="button" aria-label="Fullscreen video">fullscreen</button>
-            </div>
-            <div class="card-body">
-              <h3>Bottle placement</h3>
-              <p>Select one or more acceptable placement modes.</p>
-            </div>
-          </article>
-          <article class="video-card">
-            <div class="video-wrap">
-              <video class="featured-video" autoplay muted loop playsinline preload="metadata" poster="assets/images/block_obstacle_poster.jpg" src="assets/videos/block_obstacle.mp4"></video>
-              <button class="fs" type="button" aria-label="Fullscreen video">fullscreen</button>
-            </div>
-            <div class="card-body">
-              <h3>Obstacle pick-and-place</h3>
-              <p>Favor the requested route around obstacles.</p>
-            </div>
-          </article>
-          <article class="video-card">
-            <div class="video-wrap">
-              <video class="featured-video" autoplay muted loop playsinline preload="metadata" poster="assets/images/knife_placement_poster.jpg" src="assets/videos/knife_placement.mp4"></video>
-              <button class="fs" type="button" aria-label="Fullscreen video">fullscreen</button>
-            </div>
-            <div class="card-body">
-              <h3>Knife placement</h3>
-              <p>Change mode choice while preserving the policy interface.</p>
-            </div>
-          </article>
         </div>
       </section>
 
@@ -545,6 +493,57 @@
         </div>
       </section>
 
+      <section id="simulation" class="section left">
+        <div class="section-kicker">Simulation benchmark</div>
+        <h2>Simulated rollouts show the redirected behavior modes.</h2>
+        <p class="lead">
+          In simulation, MoRE improves deployment success across Diffusion Policy benchmarks while
+          keeping the policy's original sampler and control interface.
+        </p>
+        <div class="rollout-grid" aria-label="Simulation rollout videos">
+          <article class="video-card">
+            <div class="video-wrap">
+              <video class="rollout-video" autoplay muted loop playsinline preload="metadata" poster="assets/images/sim_pusht_poster.png" src="assets/videos/sim_pusht.mp4"></video>
+              <button class="fs" type="button" aria-label="Fullscreen Push-T video">fullscreen</button>
+            </div>
+            <div class="card-body">
+              <h3>Push-T</h3>
+              <p>SR: 50.0 → 98.3</p>
+            </div>
+          </article>
+          <article class="video-card">
+            <div class="video-wrap">
+              <video class="rollout-video" autoplay muted loop playsinline preload="metadata" poster="assets/images/sim_push_wall_poster.png" src="assets/videos/sim_push_wall.mp4"></video>
+              <button class="fs" type="button" aria-label="Fullscreen Push-Wall video">fullscreen</button>
+            </div>
+            <div class="card-body">
+              <h3>Push-Wall</h3>
+              <p>SR: 37.0 → 80.7</p>
+            </div>
+          </article>
+          <article class="video-card">
+            <div class="video-wrap">
+              <video class="rollout-video" autoplay muted loop playsinline preload="metadata" poster="assets/images/sim_push_pillars_poster.png" src="assets/videos/sim_push_pillars.mp4"></video>
+              <button class="fs" type="button" aria-label="Fullscreen Push-Pillars video">fullscreen</button>
+            </div>
+            <div class="card-body">
+              <h3>Push-Pillars</h3>
+              <p>SR: 21.5 → 72.3</p>
+            </div>
+          </article>
+          <article class="video-card">
+            <div class="video-wrap">
+              <video class="rollout-video" autoplay muted loop playsinline preload="metadata" poster="assets/images/sim_quadruped_poster.png" src="assets/videos/sim_quadruped.mp4"></video>
+              <button class="fs" type="button" aria-label="Fullscreen Quadruped video">fullscreen</button>
+            </div>
+            <div class="card-body">
+              <h3>Quadruped</h3>
+              <p>SR: 50.0 → 84.3</p>
+            </div>
+          </article>
+        </div>
+      </section>
+
       <section id="robots" class="section left">
         <div class="section-kicker">Real robot deployment</div>
         <h2>Mode edits transfer to physical robot tasks.</h2>
@@ -552,6 +551,48 @@
           Across four real-robot tasks with a Franka Research 3 arm, MoRE shifts rollouts toward
           requested behavior modes while preserving task completion.
         </p>
+        <div class="rollout-grid" aria-label="Real robot rollout videos">
+          <article class="video-card">
+            <div class="video-wrap">
+              <video class="rollout-video" autoplay muted loop playsinline preload="metadata" poster="assets/images/knife_handover_poster.jpg" src="assets/videos/knife_handover.mp4"></video>
+              <button class="fs" type="button" aria-label="Fullscreen knife handover video">fullscreen</button>
+            </div>
+            <div class="card-body">
+              <h3>Knife handover</h3>
+              <p>Shift handovers toward the desired orientation.</p>
+            </div>
+          </article>
+          <article class="video-card">
+            <div class="video-wrap">
+              <video class="rollout-video" autoplay muted loop playsinline preload="metadata" poster="assets/images/bottle_placement_poster.jpg" src="assets/videos/bottle_placement.mp4"></video>
+              <button class="fs" type="button" aria-label="Fullscreen bottle placement video">fullscreen</button>
+            </div>
+            <div class="card-body">
+              <h3>Bottle placement</h3>
+              <p>Select one or more acceptable placement modes.</p>
+            </div>
+          </article>
+          <article class="video-card">
+            <div class="video-wrap">
+              <video class="rollout-video" autoplay muted loop playsinline preload="metadata" poster="assets/images/block_obstacle_poster.jpg" src="assets/videos/block_obstacle.mp4"></video>
+              <button class="fs" type="button" aria-label="Fullscreen obstacle pick-and-place video">fullscreen</button>
+            </div>
+            <div class="card-body">
+              <h3>Obstacle pick-and-place</h3>
+              <p>Favor the requested route around obstacles.</p>
+            </div>
+          </article>
+          <article class="video-card">
+            <div class="video-wrap">
+              <video class="rollout-video" autoplay muted loop playsinline preload="metadata" poster="assets/images/knife_placement_poster.jpg" src="assets/videos/knife_placement.mp4"></video>
+              <button class="fs" type="button" aria-label="Fullscreen knife placement video">fullscreen</button>
+            </div>
+            <div class="card-body">
+              <h3>Knife placement</h3>
+              <p>Change mode choice while preserving the policy interface.</p>
+            </div>
+          </article>
+        </div>
         <div class="table-wrap">
           <table>
             <thead>
@@ -592,45 +633,6 @@
         </div>
       </section>
 
-      <section id="results" class="section left">
-        <div class="section-kicker">Simulation benchmark</div>
-        <h2>Redirect mode choice without changing the inference path.</h2>
-        <p class="lead">
-          In simulation, MoRE improves deployment success across Diffusion Policy benchmarks while
-          keeping the policy's original sampler and control interface.
-        </p>
-        <div class="task-grid">
-          <article class="image-card">
-            <img src="assets/images/pusht_traj.png" alt="Push-T trajectory modes">
-            <div class="card-body">
-              <h3>Push-T</h3>
-              <p>SR: 50.0 → 98.3</p>
-            </div>
-          </article>
-          <article class="image-card">
-            <img src="assets/images/push_wall_traj.png" alt="Push around wall trajectory modes">
-            <div class="card-body">
-              <h3>Push-Wall</h3>
-              <p>SR: 37.0 → 80.7</p>
-            </div>
-          </article>
-          <article class="image-card">
-            <img src="assets/images/push_pillars_traj.png" alt="Push around pillars trajectory modes">
-            <div class="card-body">
-              <h3>Push-Pillars</h3>
-              <p>SR: 21.5 → 72.3</p>
-            </div>
-          </article>
-          <article class="image-card">
-            <img src="assets/images/quadruped_traj.png" alt="Quadruped navigation trajectory modes">
-            <div class="card-body">
-              <h3>Quadruped</h3>
-              <p>SR: 50.0 → 84.3</p>
-            </div>
-          </article>
-        </div>
-      </section>
-
       <section id="supplementary" class="section narrow">
         <div class="section-kicker">Supplementary video</div>
         <h2>Additional rollouts and task examples.</h2>
@@ -639,7 +641,7 @@
         </p>
         <div class="wide-video">
           <div class="video-wrap">
-            <video controls preload="metadata" poster="assets/images/supp_video_final_poster.jpg" src="assets/videos/supp_video_final.mp4"></video>
+            <video controls autoplay muted loop playsinline preload="metadata" poster="assets/images/supp_video_final_poster.jpg" src="assets/videos/supp_video_final.mp4"></video>
           </div>
         </div>
       </section>
@@ -670,21 +672,21 @@
     </footer>
 
     <script>
-      const featuredVideos = Array.from(document.querySelectorAll(".featured-video"));
-      const playFeaturedVideos = () => {
-        for (const video of featuredVideos) {
+      const autoplayVideos = Array.from(document.querySelectorAll("video[autoplay]"));
+      const playAutoplayVideos = () => {
+        for (const video of autoplayVideos) {
           video.play().catch(() => {});
         }
       };
-      playFeaturedVideos();
+      playAutoplayVideos();
       document.addEventListener("visibilitychange", () => {
         if (document.hidden) {
-          for (const video of featuredVideos) video.pause();
+          for (const video of autoplayVideos) video.pause();
         } else {
-          playFeaturedVideos();
+          playAutoplayVideos();
         }
       });
-      for (const video of featuredVideos) {
+      for (const video of autoplayVideos) {
         video.addEventListener("dblclick", () => {
           if (video.requestFullscreen) video.requestFullscreen();
         });
