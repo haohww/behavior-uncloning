@@ -23,7 +23,7 @@
         --serif: "Castoro", "Noto Serif", Iowan Old Style, Georgia, serif;
         --sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-        --max: 1440px;
+        --max: 1720px;
         --narrow: 850px;
       }
 
@@ -80,7 +80,7 @@
       .hero {
         max-width: var(--max);
         margin: 0 auto;
-        padding: 68px 24px 34px;
+        padding: 58px 18px 34px;
         text-align: center;
       }
       .eyebrow {
@@ -92,13 +92,14 @@
         color: var(--muted);
       }
       h1 {
-        max-width: 13ch;
+        max-width: none;
         margin: 0 auto 18px;
         font-family: var(--serif);
-        font-size: clamp(2.9rem, 8vw, 6.2rem);
+        font-size: clamp(3rem, 6.4vw, 6.2rem);
         font-weight: 400;
         line-height: 0.98;
         letter-spacing: 0;
+        white-space: nowrap;
       }
       .subtitle {
         max-width: 760px;
@@ -182,7 +183,7 @@
       .video-grid {
         display: grid;
         grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 14px;
+        gap: 18px;
         text-align: left;
       }
       .video-card,
@@ -383,6 +384,7 @@
       }
 
       @media (max-width: 980px) {
+        h1 { white-space: normal; }
         .video-grid,
         .highlights,
         .task-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -416,12 +418,12 @@
 
     <main id="top">
       <section class="hero">
-        <div class="eyebrow">CoRL 2026 submission</div>
         <h1>Behavior Uncloning</h1>
         <p class="subtitle">Distilling Mode Redirection into Policy Weights without Inference-Time Steering</p>
         <p class="hero-note">
           MoRE edits a mixed-mode behavior-cloned policy into a standalone desired-mode policy.
-          The temporary classifier is used only during editing; deployment keeps the original policy inference path.
+          A mode classifier provides the training-time redirection signal; the deployed policy keeps
+          the original inference path.
         </p>
         <div class="cta">
           <a class="button" href="https://github.com/haohww/behavior-uncloning">Code</a>
@@ -437,7 +439,7 @@
             </div>
             <div class="card-body">
               <h3>Knife handover</h3>
-              <p>Redirect toward the deployment-safe handover mode.</p>
+              <p>Shift handovers toward the desired orientation.</p>
             </div>
           </article>
           <article class="video-card">
@@ -447,7 +449,7 @@
             </div>
             <div class="card-body">
               <h3>Bottle placement</h3>
-              <p>Preserve one or multiple acceptable placement modes.</p>
+              <p>Select one or more acceptable placement modes.</p>
             </div>
           </article>
           <article class="video-card">
@@ -457,7 +459,7 @@
             </div>
             <div class="card-body">
               <h3>Obstacle pick-and-place</h3>
-              <p>Suppress undesired routes while preserving task completion.</p>
+              <p>Favor the requested route around obstacles.</p>
             </div>
           </article>
           <article class="video-card">
@@ -467,7 +469,7 @@
             </div>
             <div class="card-body">
               <h3>Knife placement</h3>
-              <p>Edit mode choice without adding an inference-time module.</p>
+              <p>Change mode choice while preserving the policy interface.</p>
             </div>
           </article>
         </div>
@@ -479,22 +481,22 @@
         <div class="abstract">
           <p>
             Behavior-cloned policies often learn multiple behavior modes from demonstration datasets,
-            including modes that are unsafe or otherwise undesired at deployment. Standard remedies
-            such as data curation and inference-time steering either require access to the original
-            demonstrations for full retraining or add substantial inference-time overhead.
+            including modes that are unsafe, inconvenient, or otherwise undesired at deployment.
+            Standard remedies such as data curation and inference-time steering either require
+            full retraining or add extra computation to every control step.
           </p>
           <p>
             MoRE redirects policy rollouts toward desired behavior modes through a short uncloning
-            step. It trains a temporary behavior-mode classifier, backpropagates a classifier-guided
-            redirection loss into the policy weights, balances the edit with a retain loss on desired
-            samples, and then discards the classifier. Across simulated and real-world tasks, MoRE
-            improves deployment success while preserving the original inference speed.
+            step. A behavior-mode classifier supplies a differentiable redirection signal during
+            editing, while a retain loss preserves desired-mode competence. After editing, the
+            classifier is no longer needed: the updated policy runs through the same inference path
+            as the original policy.
           </p>
         </div>
         <div class="highlights">
           <article class="stat-card">
             <div class="stat">44</div>
-            <p>percentage-point average SR improvement over the original mixed policy.</p>
+            <p>percentage-point average deployment success improvement over the original mixed policy.</p>
           </article>
           <article class="stat-card">
             <div class="stat">8</div>
@@ -502,40 +504,40 @@
           </article>
           <article class="stat-card">
             <div class="stat">&lt;500</div>
-            <p>editing gradient steps per target setting in the reported experiments.</p>
+            <p>editing gradient steps per target setting in our evaluations.</p>
           </article>
           <article class="stat-card">
             <div class="stat">0x</div>
-            <p>extra inference-time steering overhead after the policy edit.</p>
+            <p>additional inference-time steering modules after the edit.</p>
           </article>
         </div>
       </section>
 
       <section id="method" class="section left">
         <div class="section-kicker">Method</div>
-        <h2>A classifier guides the edit, then disappears.</h2>
+        <h2>Training-time redirection, standalone deployment.</h2>
         <p class="lead">
           MoRE treats behavior mode control as a policy editing problem. It uses mode-labeled examples
-          to learn where the original policy's rollouts point, then distills the desired redirection into
-          the policy weights.
+          to train a mode classifier, then distills the desired redirection into the policy weights so
+          the final policy can be deployed without an auxiliary steering module.
         </p>
         <div class="method-flow">
           <article class="method-card">
             <div class="num">1</div>
             <h3>Train a mode classifier</h3>
-            <p>Fit a K-way classifier on cached features from the original mixed policy.</p>
+            <p>Fit a K-way classifier on features cached from the original mixed policy.</p>
           </article>
           <div class="arrow">→</div>
           <article class="method-card">
             <div class="num">2</div>
             <h3>Redirect undesired samples</h3>
-            <p>Push classifier probability mass toward the desired mode set using differentiable policy features.</p>
+            <p>Use differentiable policy features to move probability mass toward the desired mode set.</p>
           </article>
           <div class="arrow">→</div>
           <article class="method-card">
             <div class="num">3</div>
-            <h3>Retain desired competence</h3>
-            <p>Keep the original behavior-cloning loss on desired-mode samples and deploy the edited policy alone.</p>
+            <h3>Preserve task competence</h3>
+            <p>Keep the original imitation loss on desired-mode samples and deploy the edited policy by itself.</p>
           </article>
         </div>
         <div class="equation">
@@ -547,8 +549,8 @@
         <div class="section-kicker">Real robot deployment</div>
         <h2>Mode edits transfer to physical robot tasks.</h2>
         <p class="lead">
-          We evaluate on four real-robot tasks with a Franka Research 3 arm. MoRE shifts rollouts
-          toward requested behavior modes while preserving task competence.
+          Across four real-robot tasks with a Franka Research 3 arm, MoRE shifts rollouts toward
+          requested behavior modes while preserving task completion.
         </p>
         <div class="table-wrap">
           <table>
@@ -594,8 +596,8 @@
         <div class="section-kicker">Simulation benchmark</div>
         <h2>Redirect mode choice without changing the inference path.</h2>
         <p class="lead">
-          MoRE improves deployment success rate across Diffusion Policy benchmarks and approaches
-          filtered-data retraining, while CPL and inference-time guidance baselines only partially shift modes.
+          In simulation, MoRE improves deployment success across Diffusion Policy benchmarks while
+          keeping the policy's original sampler and control interface.
         </p>
         <div class="task-grid">
           <article class="image-card">
@@ -633,8 +635,7 @@
         <div class="section-kicker">Supplementary video</div>
         <h2>Additional rollouts and task examples.</h2>
         <p class="lead">
-          The full supplementary video is included below with metadata preload so the page stays lightweight
-          until playback.
+          The longer video below shows additional task examples, rollouts, and qualitative results.
         </p>
         <div class="wide-video">
           <div class="video-wrap">
@@ -647,8 +648,9 @@
         <div class="section-kicker">Code</div>
         <h2>Compact MoRE release.</h2>
         <p class="lead">
-          The repository contains the method-defining MoRE losses, classifier utilities, a policy-agnostic
-          trainer skeleton, a Diffusion Policy feature path, tests, and a minimal synthetic example.
+          The code release contains the method-defining MoRE losses, classifier utilities,
+          a policy-agnostic trainer skeleton, a Diffusion Policy feature path, tests, and a
+          minimal synthetic example.
         </p>
         <div class="cta">
           <a class="button" href="https://github.com/haohww/behavior-uncloning">Open GitHub repository</a>
@@ -664,7 +666,7 @@
     </main>
 
     <footer>
-      Behavior Uncloning · Project page placeholder pending public paper release.
+      Behavior Uncloning · Mode redirection distilled into policy weights.
     </footer>
 
     <script>

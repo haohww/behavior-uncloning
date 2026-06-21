@@ -11,7 +11,7 @@ classifier-guided redirect loss during editing, preserves desired-mode behavior
 with a retain loss, and then discards the classifier. The edited policy runs with
 the original inference path.
 
-The paper PDF will be added after public release. Draft submission PDFs are not
+The paper PDF will be added after public release. Pre-release PDFs are not
 tracked in this repository.
 
 ## What is included
