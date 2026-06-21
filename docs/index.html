@@ -521,6 +521,7 @@
         gap: 14px;
       }
       .demo-media-card {
+        margin: 0;
         border: 1px solid var(--rule);
         border-radius: 8px;
         background: #f8fbfa;
@@ -633,46 +634,26 @@
         font-size: 0.9rem;
       }
 
-      .quad-replay-shell {
-        max-width: 1320px;
-        margin: 30px auto 0;
+      .quad-inline {
         display: grid;
-        grid-template-columns: 340px minmax(0, 1fr);
-        border: 1px solid var(--rule);
-        border-radius: 8px;
-        background: var(--card);
-        overflow: hidden;
+        gap: 12px;
+        padding: 12px;
+        background: #f8fbfa;
       }
-      .quad-replay-panel {
-        padding: 22px;
-        border-right: 1px solid var(--rule);
-        background: #fbfdfc;
+      .quad-inline.hidden,
+      #demo-traj.hidden {
+        display: none;
       }
-      .quad-replay-panel h3,
-      .quad-replay-head h3 {
-        margin: 0;
-        font-size: 1.05rem;
-        line-height: 1.3;
-      }
-      .quad-replay-panel p {
-        margin: 8px 0 0;
+      .quad-inline-status {
         color: var(--muted);
-        font-size: 0.92rem;
-        text-wrap: pretty;
+        font-size: 0.88rem;
+        text-wrap: balance;
       }
-      .quad-control-group {
-        margin-top: 20px;
-      }
-      .quad-control-group h4,
-      .quad-control-label {
-        display: block;
-        margin: 0 0 8px;
-        color: var(--muted);
-        font-family: var(--mono);
-        font-size: 0.76rem;
-        font-weight: 600;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
+      .quad-inline-controls {
+        display: grid;
+        grid-template-columns: 1.35fr 1fr 0.85fr 1fr;
+        align-items: center;
+        gap: 8px;
       }
       .quad-route-grid,
       .quad-action-row {
@@ -715,13 +696,13 @@
         border-radius: 8px;
         background: var(--card);
       }
-      .quad-stat-grid {
+      .quad-inline-readout {
         display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: repeat(4, minmax(0, 1fr));
         gap: 10px;
       }
       .quad-stat {
-        padding: 12px;
+        padding: 10px;
         border-radius: 8px;
         background: var(--tint);
       }
@@ -738,38 +719,10 @@
         font-size: 0.9rem;
         white-space: nowrap;
       }
-      .quad-replay-visual {
-        min-width: 0;
-        padding: 22px;
-      }
-      .quad-replay-head {
-        display: flex;
-        align-items: flex-start;
-        justify-content: space-between;
-        gap: 16px;
-        margin-bottom: 14px;
-      }
-      .quad-replay-head p {
-        margin: 4px 0 0;
-        color: var(--muted);
-        font-size: 0.92rem;
-        text-wrap: balance;
-      }
-      .quad-replay-badge {
-        flex: none;
-        border-radius: 999px;
-        background: var(--accent-soft);
-        color: var(--accent);
-        font-family: var(--mono);
-        font-size: 0.74rem;
-        font-weight: 600;
-        padding: 7px 10px;
-      }
       .quad-canvas-frame {
         position: relative;
         overflow: hidden;
-        border: 1px solid var(--rule);
-        border-radius: 8px;
+        border-radius: 6px;
         background: #edf5f2;
       }
       .quad-canvas-frame canvas {
@@ -794,7 +747,6 @@
         display: flex;
         flex-wrap: wrap;
         gap: 10px 16px;
-        margin-top: 12px;
         color: var(--muted);
         font-size: 0.86rem;
       }
@@ -909,8 +861,7 @@
         .demo-shell { grid-template-columns: 1fr; }
         .demo-controls { border-right: 0; border-bottom: 1px solid var(--rule); }
         .demo-button-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-        .quad-replay-shell { grid-template-columns: 1fr; }
-        .quad-replay-panel { border-right: 0; border-bottom: 1px solid var(--rule); }
+        .quad-inline-controls { grid-template-columns: repeat(2, minmax(0, 1fr)); }
         .demo-media-grid,
         .demo-bars { grid-template-columns: 1fr; }
         .arrow { display: none; }
@@ -926,12 +877,10 @@
         .demo-controls,
         .demo-visual { padding: 16px; }
         .demo-button-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-        .quad-replay-panel,
-        .quad-replay-visual { padding: 16px; }
-        .quad-replay-head { flex-direction: column; gap: 8px; }
         .quad-action-row,
         .quad-route-grid,
-        .quad-stat-grid { grid-template-columns: 1fr; }
+        .quad-inline-controls,
+        .quad-inline-readout { grid-template-columns: 1fr; }
         .demo-visual-head { flex-direction: column; gap: 8px; }
         .demo-metrics { grid-template-columns: 1fr; }
       }
@@ -1114,8 +1063,57 @@
               </figure>
               <figure class="demo-media-card">
                 <img id="demo-traj" src="assets/images/push_wall_traj.png" alt="Push-Wall trajectory summary">
+                <div class="quad-inline hidden" id="quadruped-replay">
+                  <div class="quad-canvas-frame">
+                    <canvas id="quad-canvas" aria-label="Animated quadruped rollout trajectory replay"></canvas>
+                    <div class="quad-loading" id="quad-loading">Loading recorded rollouts...</div>
+                  </div>
+                  <div class="quad-inline-status" id="quad-status">Loading recorded rollout trajectories.</div>
+                  <div class="quad-inline-controls" aria-label="Quadruped replay controls">
+                    <div class="quad-route-grid" role="tablist" aria-label="Quadruped route selector">
+                      <button class="quad-route" type="button" aria-pressed="true" data-quad-mode="left">Left route</button>
+                      <button class="quad-route" type="button" aria-pressed="false" data-quad-mode="right">Right route</button>
+                    </div>
+                    <select class="quad-select" id="quad-rollout-select" aria-label="Quadruped rollout seed"></select>
+                    <select class="quad-select" id="quad-speed-select" aria-label="Quadruped replay speed">
+                      <option value="0.5">0.5x</option>
+                      <option value="1" selected>1x</option>
+                      <option value="1.5">1.5x</option>
+                      <option value="2">2x</option>
+                    </select>
+                    <div class="quad-action-row">
+                      <button class="quad-action primary" type="button" id="quad-play-toggle">Pause</button>
+                      <button class="quad-action" type="button" id="quad-reset">Reset</button>
+                    </div>
+                  </div>
+                  <div class="quad-inline-readout">
+                    <div class="quad-stat">
+                      <span>Step</span>
+                      <strong id="quad-step">0 / 0</strong>
+                    </div>
+                    <div class="quad-stat">
+                      <span>Pose</span>
+                      <strong id="quad-pose">0.00, 0.00</strong>
+                    </div>
+                    <div class="quad-stat">
+                      <span>Yaw</span>
+                      <strong id="quad-yaw">0.00 rad</strong>
+                    </div>
+                    <div class="quad-stat">
+                      <span>Goal</span>
+                      <strong id="quad-goal">4.50, 0.00</strong>
+                    </div>
+                  </div>
+                  <div class="quad-legend" aria-label="Quadruped replay legend">
+                    <span><i class="quad-swatch left"></i>left rollouts</span>
+                    <span><i class="quad-swatch right"></i>right rollouts</span>
+                    <span><i class="quad-swatch current"></i>selected replay</span>
+                    <span><i class="quad-swatch pillar"></i>pillar</span>
+                    <span><i class="quad-swatch goal"></i>goal</span>
+                  </div>
+                </div>
                 <figcaption class="demo-media-caption">
-                  <strong>Trajectory summary</strong>
+                  <strong id="demo-traj-title">Trajectory summary</strong>
                   <span id="demo-traj-caption">Reported rollout trajectories for this simulated task.</span>
                 </figcaption>
               </figure>
@@ -1177,84 +1175,6 @@
           </table>
         </div>
         <p class="table-note">Values report average deployment success rate (SR) and task completion rate (TCR) over target modes.</p>
-        <div class="quad-replay-shell" id="quadruped-replay">
-          <aside class="quad-replay-panel" aria-label="Quadruped replay controls">
-            <h3>Quadruped trajectory replay</h3>
-            <p>
-              Replay recorded Go1 base poses from the one-pillar navigation task.
-              This is a browser-side trajectory replay, not a live physics simulator.
-            </p>
-            <div class="quad-control-group">
-              <h4>Route</h4>
-              <div class="quad-route-grid" role="tablist" aria-label="Quadruped route selector">
-                <button class="quad-route" type="button" aria-pressed="true" data-quad-mode="left">Left route</button>
-                <button class="quad-route" type="button" aria-pressed="false" data-quad-mode="right">Right route</button>
-              </div>
-            </div>
-            <div class="quad-control-group">
-              <label class="quad-control-label" for="quad-rollout-select">Rollout seed</label>
-              <select class="quad-select" id="quad-rollout-select" aria-label="Quadruped rollout seed"></select>
-            </div>
-            <div class="quad-control-group">
-              <label class="quad-control-label" for="quad-speed-select">Playback speed</label>
-              <select class="quad-select" id="quad-speed-select" aria-label="Quadruped replay speed">
-                <option value="0.5">0.5x</option>
-                <option value="1" selected>1x</option>
-                <option value="1.5">1.5x</option>
-                <option value="2">2x</option>
-              </select>
-            </div>
-            <div class="quad-control-group">
-              <div class="quad-action-row">
-                <button class="quad-action primary" type="button" id="quad-play-toggle">Pause</button>
-                <button class="quad-action" type="button" id="quad-reset">Reset</button>
-              </div>
-            </div>
-            <div class="quad-control-group">
-              <div class="quad-stat-grid">
-                <div class="quad-stat">
-                  <span>Step</span>
-                  <strong id="quad-step">0 / 0</strong>
-                </div>
-                <div class="quad-stat">
-                  <span>Pose</span>
-                  <strong id="quad-pose">x 0.00 · y 0.00</strong>
-                </div>
-                <div class="quad-stat">
-                  <span>Yaw</span>
-                  <strong id="quad-yaw">0.00 rad</strong>
-                </div>
-                <div class="quad-stat">
-                  <span>Goal</span>
-                  <strong id="quad-goal">x 4.50 · y 0.00</strong>
-                </div>
-              </div>
-            </div>
-            <p class="demo-note">
-              The replay asset contains 20 successful rollout traces exported from the quadruped evaluation logs.
-            </p>
-          </aside>
-          <div class="quad-replay-visual">
-            <div class="quad-replay-head">
-              <div>
-                <h3>Go1 one-pillar navigation</h3>
-                <p id="quad-status">Loading recorded rollout trajectories.</p>
-              </div>
-              <span class="quad-replay-badge">recorded poses</span>
-            </div>
-            <div class="quad-canvas-frame">
-              <canvas id="quad-canvas" aria-label="Animated quadruped rollout trajectory replay"></canvas>
-              <div class="quad-loading" id="quad-loading">Loading recorded rollouts...</div>
-            </div>
-            <div class="quad-legend" aria-label="Quadruped replay legend">
-              <span><i class="quad-swatch left"></i>left rollouts</span>
-              <span><i class="quad-swatch right"></i>right rollouts</span>
-              <span><i class="quad-swatch current"></i>selected replay</span>
-              <span><i class="quad-swatch pillar"></i>pillar</span>
-              <span><i class="quad-swatch goal"></i>goal</span>
-            </div>
-          </div>
-        </div>
       </section>
 
       <section id="robots" class="section left">
@@ -1447,10 +1367,21 @@
           video.load();
           video.play().catch(() => {});
         }
-        document.getElementById("demo-traj").src = task.trajectory;
-        document.getElementById("demo-traj").alt = `${task.label} trajectory summary`;
+        const isQuadruped = demoState.taskId === "quadruped";
+        const trajImage = document.getElementById("demo-traj");
+        const quadReplay = document.getElementById("quadruped-replay");
+        trajImage.src = task.trajectory;
+        trajImage.alt = `${task.label} trajectory summary`;
+        trajImage.classList.toggle("hidden", isQuadruped);
+        quadReplay.classList.toggle("hidden", !isQuadruped);
         document.getElementById("demo-video-caption").textContent = `Representative MoRE rollout for ${task.label}.`;
-        document.getElementById("demo-traj-caption").textContent = `Trajectory summary for ${task.label}; modes: ${task.modesText}.`;
+        document.getElementById("demo-traj-title").textContent = isQuadruped ? "Interactive trajectory replay" : "Trajectory summary";
+        document.getElementById("demo-traj-caption").textContent = isQuadruped
+          ? "Recorded Go1 base-pose rollouts for the one-pillar navigation task."
+          : `Trajectory summary for ${task.label}; modes: ${task.modesText}.`;
+        if (isQuadruped) {
+          window.requestAnimationFrame(() => window.quadrupedReplay?.draw());
+        }
 
         document.getElementById("demo-bars").innerHTML =
           outcomeCard("Original mixed policy", task.originalSr, task.originalTcr, "Task-level average over target modes.") +
@@ -1768,6 +1699,8 @@
           state.lastTs = null;
           draw();
         };
+
+        window.quadrupedReplay = { draw, reset: resetReplay };
 
         const animate = (ts) => {
           const rollout = selectedRollout();
