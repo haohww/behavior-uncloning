@@ -402,7 +402,7 @@
         max-width: 1320px;
         margin: 28px auto 0;
         display: grid;
-        grid-template-columns: 340px minmax(0, 1fr);
+        grid-template-columns: 360px minmax(0, 1fr);
         border: 1px solid var(--rule);
         border-radius: 8px;
         background: var(--card);
@@ -442,31 +442,6 @@
         background: var(--accent);
         border-color: var(--accent);
         color: white;
-      }
-      .demo-slider {
-        width: 100%;
-        accent-color: var(--accent);
-      }
-      .demo-step-row {
-        display: flex;
-        align-items: baseline;
-        justify-content: space-between;
-        gap: 12px;
-        margin-bottom: 8px;
-      }
-      .demo-step-value {
-        color: var(--accent);
-        font-family: var(--mono);
-        font-size: 0.95rem;
-        font-weight: 600;
-      }
-      .demo-step-labels {
-        display: flex;
-        justify-content: space-between;
-        color: var(--muted);
-        font-family: var(--mono);
-        font-size: 0.68rem;
-        margin-top: 6px;
       }
       .demo-metrics {
         display: grid;
@@ -519,20 +494,41 @@
         font-weight: 600;
         padding: 7px 10px;
       }
-      .demo-stage {
+      .demo-media-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.85fr);
+        gap: 14px;
+      }
+      .demo-media-card {
         border: 1px solid var(--rule);
         border-radius: 8px;
-        background:
-          linear-gradient(rgba(215, 226, 221, 0.45) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(215, 226, 221, 0.45) 1px, transparent 1px),
-          #f8fbfa;
-        background-size: 32px 32px;
+        background: #f8fbfa;
         overflow: hidden;
       }
-      .demo-stage svg {
-        display: block;
+      .demo-media-card video,
+      .demo-media-card img {
         width: 100%;
         aspect-ratio: 16 / 9;
+        object-fit: contain;
+        background: #e6efec;
+      }
+      .demo-media-card img {
+        background: #f6faf8;
+      }
+      .demo-media-caption {
+        padding: 11px 12px 12px;
+        border-top: 1px solid var(--rule);
+      }
+      .demo-media-caption strong {
+        display: block;
+        color: var(--ink);
+        font-size: 0.92rem;
+      }
+      .demo-media-caption span {
+        display: block;
+        margin-top: 3px;
+        color: var(--muted);
+        font-size: 0.84rem;
       }
       .demo-bars {
         display: grid;
@@ -544,29 +540,71 @@
         margin: 0 0 8px;
         font-size: 0.92rem;
       }
-      .mode-row + .mode-row { margin-top: 9px; }
-      .mode-row-head {
+      .outcome-card {
+        border: 1px solid var(--rule);
+        border-radius: 8px;
+        padding: 14px;
+        background: #fbfdfc;
+      }
+      .outcome-head {
         display: flex;
         justify-content: space-between;
         gap: 12px;
-        color: var(--ink-soft);
-        font-size: 0.88rem;
+        align-items: baseline;
+        margin-bottom: 8px;
       }
-      .mode-track {
-        height: 10px;
-        margin-top: 5px;
+      .outcome-head strong {
+        color: var(--ink);
+      }
+      .outcome-head span {
+        color: var(--accent);
+        font-family: var(--mono);
+        font-weight: 600;
+      }
+      .outcome-stack {
+        display: flex;
+        height: 15px;
         border-radius: 999px;
         background: #e3ece8;
         overflow: hidden;
       }
-      .mode-fill {
+      .outcome-segment {
         height: 100%;
-        width: 0;
-        border-radius: inherit;
-        background: var(--muted);
-        transition: width 260ms ease;
+        min-width: 0;
       }
-      .mode-fill.desired { background: var(--accent); }
+      .outcome-segment.target {
+        background: var(--accent);
+      }
+      .outcome-segment.other {
+        background: #9a8d76;
+      }
+      .outcome-segment.fail {
+        background: #d8e1dd;
+      }
+      .outcome-list {
+        display: grid;
+        gap: 7px;
+        margin-top: 11px;
+      }
+      .outcome-item {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        color: var(--muted);
+        font-size: 0.87rem;
+      }
+      .outcome-item span:first-child::before {
+        content: "";
+        display: inline-block;
+        width: 9px;
+        height: 9px;
+        margin-right: 7px;
+        border-radius: 999px;
+        background: var(--muted);
+      }
+      .outcome-item.target span:first-child::before { background: var(--accent); }
+      .outcome-item.other span:first-child::before { background: #9a8d76; }
+      .outcome-item.fail span:first-child::before { background: #d8e1dd; border: 1px solid #b8c9c2; }
       .deployment-path {
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -585,10 +623,6 @@
         display: block;
         color: var(--ink);
         margin-bottom: 5px;
-      }
-      .deployment-step.active {
-        outline: 2px solid var(--accent);
-        background: #edf8f5;
       }
       .deployment-step .tag {
         display: inline-flex;
@@ -690,6 +724,7 @@
         .method-flow { grid-template-columns: 1fr; }
         .demo-shell { grid-template-columns: 1fr; }
         .demo-controls { border-right: 0; border-bottom: 1px solid var(--rule); }
+        .demo-media-grid,
         .demo-bars,
         .deployment-path { grid-template-columns: 1fr; }
         .arrow { display: none; }
@@ -832,9 +867,9 @@
         <div class="section-kicker">Interactive Demo</div>
         <h2>Edit once, deploy the same policy interface.</h2>
         <p class="lead">
-          Select a simulated task, choose the desired behavior mode, and scrub through the offline
-          edit. The visualization shows the target-mode rollout share increasing while undesired
-          modes are suppressed; after editing, the deployed policy no longer uses the classifier.
+          Select a simulated task and desired behavior mode. The explorer switches between actual
+          rollout media and reported rollout outcomes, making the deployment claim explicit: MoRE
+          changes the checkpoint offline, while runtime inference keeps the original policy path.
         </p>
         <div class="demo-shell">
           <aside class="demo-controls" aria-label="Interactive mode edit controls">
@@ -847,20 +882,6 @@
               <div class="demo-button-grid" id="demo-target-buttons" aria-label="Desired mode selector"></div>
             </div>
             <div class="demo-control-group">
-              <div class="demo-step-row">
-                <h3>Edit steps</h3>
-                <span class="demo-step-value" id="demo-step-value">500</span>
-              </div>
-              <input class="demo-slider" id="demo-step" type="range" min="0" max="4" step="1" value="4" aria-label="Offline edit steps">
-              <div class="demo-step-labels" aria-hidden="true">
-                <span>0</span>
-                <span>50</span>
-                <span>100</span>
-                <span>200</span>
-                <span>500</span>
-              </div>
-            </div>
-            <div class="demo-control-group">
               <h3>Reported outcome</h3>
               <div class="demo-metrics">
                 <div class="demo-metric">
@@ -868,7 +889,7 @@
                   <strong id="demo-original-sr">37.0%</strong>
                 </div>
                 <div class="demo-metric">
-                  <span>MoRE Avg SR</span>
+                  <span>Selected MoRE SR</span>
                   <strong id="demo-more-sr">80.7%</strong>
                 </div>
                 <div class="demo-metric">
@@ -881,41 +902,59 @@
                 </div>
               </div>
             </div>
+            <p class="demo-note">
+              Original values use the task-level Avg SR/TCR from the paper table. MoRE values use
+              per-target results where available.
+            </p>
           </aside>
           <div class="demo-visual">
             <div class="demo-visual-head">
               <div>
                 <h3 id="demo-viz-title">Push-Wall: redirect toward left</h3>
                 <p class="demo-status" id="demo-viz-caption">
-                  Edited checkpoint selected. Classifier is not loaded during deployment.
+                  Representative edited rollout and reported outcome breakdown.
                 </p>
               </div>
-              <span class="demo-badge" id="demo-badge">deploy same sampler</span>
+              <span class="demo-badge">actual media + paper metrics</span>
             </div>
-            <div class="demo-stage">
-              <svg id="demo-svg" viewBox="0 0 720 405" role="img" aria-labelledby="demo-viz-title demo-viz-caption"></svg>
+            <div class="demo-media-grid">
+              <figure class="demo-media-card">
+                <video id="demo-video" autoplay muted loop playsinline preload="metadata" poster="assets/images/sim_push_wall_poster.png" src="assets/videos/sim_push_wall.mp4"></video>
+                <figcaption class="demo-media-caption">
+                  <strong>Representative MoRE rollout</strong>
+                  <span id="demo-video-caption">Actual rollout video used on this project page.</span>
+                </figcaption>
+              </figure>
+              <figure class="demo-media-card">
+                <img id="demo-traj" src="assets/images/push_wall_traj.png" alt="Push-Wall trajectory summary">
+                <figcaption class="demo-media-caption">
+                  <strong>Trajectory summary</strong>
+                  <span id="demo-traj-caption">Reported rollout trajectories for this simulated task.</span>
+                </figcaption>
+              </figure>
             </div>
-            <div class="demo-bars" id="demo-bars" aria-label="Mode distribution during editing"></div>
+            <div class="demo-bars" id="demo-bars" aria-label="Reported rollout outcome breakdown"></div>
             <div class="deployment-path" aria-label="MoRE deployment workflow">
-              <div class="deployment-step" id="demo-deploy-original">
+              <div class="deployment-step">
                 <strong>Original policy</strong>
                 Mixed behavior modes learned from demonstrations.
                 <span class="tag">standard policy</span>
               </div>
-              <div class="deployment-step" id="demo-deploy-edit">
+              <div class="deployment-step">
                 <strong>Offline MoRE edit</strong>
                 A frozen mode classifier supplies the redirection loss.
-                <span class="tag">classifier used here</span>
+                <span class="tag">used only here</span>
               </div>
-              <div class="deployment-step" id="demo-deploy-final">
+              <div class="deployment-step">
                 <strong>Edited checkpoint</strong>
                 The deployed policy keeps the original inference path.
                 <span class="tag">no runtime steering</span>
               </div>
             </div>
             <p class="demo-note">
-              This is a browser-side replay of reported task statistics with illustrative rollout traces;
-              it is designed to explain the offline edit and deployment workflow, not to run a full simulator.
+              This is not a browser physics simulator. It is an interactive artifact viewer over the
+              released project media and the paper's SR/TCR definitions: SR is target-aligned task
+              success, while TCR counts task completion regardless of mode.
             </p>
           </div>
         </div>
@@ -1087,242 +1126,124 @@
     </footer>
 
     <script>
-      const demoStepValues = [0, 50, 100, 200, 500];
-      const demoStepProgress = [0, 0.18, 0.4, 0.7, 1];
       const demoTasks = {
         pushwall: {
           label: "Push-Wall",
+          video: "assets/videos/sim_push_wall.mp4",
+          poster: "assets/images/sim_push_wall_poster.png",
+          trajectory: "assets/images/push_wall_traj.png",
           modes: [
-            { id: "left", label: "left" },
-            { id: "right", label: "right" }
+            { id: "left", label: "left", sr: 80.7, tcr: 80.7 },
+            { id: "right", label: "right", sr: 80.7, tcr: 80.7 }
           ],
           defaultTarget: "left",
           originalSr: 37.0,
-          moreSr: 80.7,
-          gain: 43.7,
-          tcr: 80.7,
-          paths: {
-            left: "M 78 322 C 156 318 172 230 252 222 C 330 214 394 164 474 116 C 540 76 594 67 646 84",
-            right: "M 78 322 C 160 342 220 302 278 258 C 350 204 404 205 488 186 C 548 172 606 130 646 84"
-          },
-          labels: {
-            left: [490, 102],
-            right: [500, 204]
-          },
-          decor: "wall"
+          originalTcr: 74.0
         },
         pusht: {
           label: "Push-T",
+          video: "assets/videos/sim_pusht.mp4",
+          poster: "assets/images/sim_pusht_poster.png",
+          trajectory: "assets/images/pusht_traj.png",
           modes: [
-            { id: "left", label: "left" },
-            { id: "right", label: "right" }
+            { id: "left", label: "left", sr: 100.0, tcr: 100.0 },
+            { id: "right", label: "right", sr: 96.7, tcr: 97.3 }
           ],
           defaultTarget: "left",
           originalSr: 50.0,
-          moreSr: 98.3,
-          gain: 48.3,
-          tcr: 98.7,
-          paths: {
-            left: "M 90 318 C 172 286 218 234 286 198 C 358 160 420 118 536 102 C 588 94 626 98 660 114",
-            right: "M 90 318 C 174 322 232 288 302 246 C 374 204 432 204 532 226 C 592 240 636 224 660 196"
-          },
-          labels: {
-            left: [536, 88],
-            right: [532, 244]
-          },
-          decor: "pusht"
+          originalTcr: 100.0
         },
         pushpillars: {
           label: "Push-Pillars",
+          video: "assets/videos/sim_push_pillars.mp4",
+          poster: "assets/images/sim_push_pillars_poster.png",
+          trajectory: "assets/images/push_pillars_traj.png",
           modes: [
-            { id: "L", label: "L" },
-            { id: "LG", label: "LG" },
-            { id: "RG", label: "RG" },
-            { id: "R", label: "R" }
+            { id: "L", label: "L", sr: 50.7, tcr: 51.3 },
+            { id: "LG", label: "LG", sr: 96.0, tcr: 99.3 },
+            { id: "RG", label: "RG", sr: 70.7, tcr: 98.7 },
+            { id: "R", label: "R", sr: 72.0, tcr: 73.3 }
           ],
           defaultTarget: "RG",
           originalSr: 21.5,
-          moreSr: 72.3,
-          gain: 50.8,
-          tcr: 80.7,
-          paths: {
-            L: "M 74 324 C 154 290 188 194 272 150 C 368 100 494 88 646 110",
-            LG: "M 74 324 C 158 286 224 236 304 210 C 414 174 526 142 646 128",
-            RG: "M 74 324 C 160 326 238 292 326 252 C 430 204 542 184 646 154",
-            R: "M 74 324 C 160 352 252 334 352 300 C 456 264 552 224 646 178"
-          },
-          labels: {
-            L: [504, 88],
-            LG: [520, 130],
-            RG: [526, 174],
-            R: [522, 228]
-          },
-          decor: "pillars"
+          originalTcr: 86.0
         },
         quadruped: {
           label: "Quadruped",
+          video: "assets/videos/sim_quadruped.mp4",
+          poster: "assets/images/sim_quadruped_poster.png",
+          trajectory: "assets/images/quadruped_traj.png",
           modes: [
-            { id: "left", label: "left route" },
-            { id: "right", label: "right route" }
+            { id: "left", label: "left route", sr: 95.3, tcr: 95.3 },
+            { id: "right", label: "right route", sr: 73.3, tcr: 74.0 }
           ],
           defaultTarget: "left",
           originalSr: 50.0,
-          moreSr: 84.3,
-          gain: 34.3,
-          tcr: 84.7,
-          paths: {
-            left: "M 70 316 C 138 284 194 220 270 180 C 348 140 454 126 642 126",
-            right: "M 70 316 C 154 348 238 338 326 300 C 414 262 514 214 642 166"
-          },
-          labels: {
-            left: [500, 108],
-            right: [510, 198]
-          },
-          decor: "quadruped"
+          originalTcr: 100.0
         }
       };
 
-      const demoState = { taskId: "pushwall", targetId: "left", stepIndex: 4 };
-      const demoColors = ["#8aa19a", "#9a8d76", "#7896a8", "#a7868c"];
+      const demoState = { taskId: "pushwall", targetId: "left" };
 
       const fmt = (value) => `${value.toFixed(1)}%`;
-      const currentTargetShare = (task, progress) => task.originalSr + (task.moreSr - task.originalSr) * progress;
-      const modeShares = (task, targetId, targetShare) => {
-        const remaining = Math.max(0, 100 - targetShare);
-        const otherShare = task.modes.length > 1 ? remaining / (task.modes.length - 1) : remaining;
-        return task.modes.map((mode) => ({
-          ...mode,
-          share: mode.id === targetId ? targetShare : otherShare,
-          desired: mode.id === targetId
-        }));
-      };
-      const pathEndpoint = (path) => {
-        const coords = path.match(/-?\d+(?:\.\d+)?/g).map(Number);
-        return [coords[coords.length - 2], coords[coords.length - 1]];
-      };
-
-      const sceneDecor = (kind) => {
-        if (kind === "wall") {
-          return `
-            <rect x="326" y="136" width="62" height="150" rx="8" fill="#d9e4df" stroke="#b7c8c1" stroke-width="2"/>
-            <text x="357" y="222" text-anchor="middle" fill="#687772" font-size="14" font-family="Inter">wall</text>
-          `;
-        }
-        if (kind === "pillars") {
-          return `
-            <circle cx="296" cy="170" r="26" fill="#d9e4df" stroke="#b7c8c1" stroke-width="2"/>
-            <circle cx="384" cy="222" r="28" fill="#d9e4df" stroke="#b7c8c1" stroke-width="2"/>
-            <circle cx="472" cy="160" r="24" fill="#d9e4df" stroke="#b7c8c1" stroke-width="2"/>
-          `;
-        }
-        if (kind === "quadruped") {
-          return `
-            <path d="M 48 270 C 130 246 192 250 260 230 C 342 206 412 218 502 190 C 574 168 628 170 684 150 L 684 360 L 48 360 Z" fill="#e2ece8" opacity="0.86"/>
-            <path d="M 48 270 C 130 246 192 250 260 230 C 342 206 412 218 502 190 C 574 168 628 170 684 150" fill="none" stroke="#b7c8c1" stroke-width="2"/>
-          `;
-        }
+      const outcomeParts = (sr, tcr) => ({
+        target: Math.max(0, sr),
+        other: Math.max(0, tcr - sr),
+        fail: Math.max(0, 100 - tcr)
+      });
+      const outcomeCard = (title, sr, tcr, detail) => {
+        const parts = outcomeParts(sr, tcr);
         return `
-          <path d="M 492 96 L 618 96 L 618 156 L 568 156 L 568 248 L 492 248 Z" fill="#d9e4df" stroke="#b7c8c1" stroke-width="2"/>
-          <text x="552" y="134" text-anchor="middle" fill="#687772" font-size="14" font-family="Inter">T goal</text>
-        `;
-      };
-
-      const renderDemoScene = (task, targetId, progress) => {
-        const [goalX, goalY] = pathEndpoint(task.paths[targetId]);
-        const pathMarkup = task.modes.map((mode, modeIndex) => {
-          const isDesired = mode.id === targetId;
-          const opacity = isDesired ? 0.36 + 0.58 * progress : 0.42 - 0.32 * progress;
-          const width = isDesired ? 8 : 5;
-          const stroke = isDesired ? "#0c7278" : demoColors[modeIndex % demoColors.length];
-          const dash = isDesired ? "" : `stroke-dasharray="${progress > 0.65 ? "8 10" : "0"}"`;
-          const id = isDesired ? "id=\"demo-selected-path\"" : "";
-          const [labelX, labelY] = task.labels[mode.id];
-          return `
-            <path ${id} d="${task.paths[mode.id]}" fill="none" stroke="${stroke}" stroke-width="${width}" stroke-linecap="round" opacity="${opacity.toFixed(2)}" ${dash}/>
-            <text x="${labelX}" y="${labelY}" fill="${stroke}" opacity="${Math.max(0.34, opacity).toFixed(2)}" font-size="14" font-family="Inter" font-weight="${isDesired ? 700 : 500}">${mode.label}</text>
-          `;
-        }).join("");
-
-        return `
-          <defs>
-            <filter id="demo-shadow" x="-20%" y="-20%" width="140%" height="140%">
-              <feDropShadow dx="0" dy="5" stdDeviation="5" flood-color="#17211d" flood-opacity="0.16"/>
-            </filter>
-          </defs>
-          ${sceneDecor(task.decor)}
-          ${pathMarkup}
-          <circle cx="78" cy="322" r="13" fill="#17211d" filter="url(#demo-shadow)"/>
-          <text x="78" y="354" text-anchor="middle" fill="#3d4b47" font-size="13" font-family="Inter">start</text>
-          <circle cx="${goalX}" cy="${goalY}" r="14" fill="#0c7278" opacity="0.9" filter="url(#demo-shadow)"/>
-          <text x="${goalX}" y="${Math.max(28, goalY - 22)}" text-anchor="middle" fill="#3d4b47" font-size="13" font-family="Inter">desired goal</text>
-          <circle r="9" fill="#0c7278" stroke="white" stroke-width="3" filter="url(#demo-shadow)">
-            <animateMotion dur="3.4s" repeatCount="indefinite" rotate="auto">
-              <mpath href="#demo-selected-path"></mpath>
-            </animateMotion>
-          </circle>
-          <text x="34" y="32" fill="#687772" font-size="13" font-family="JetBrains Mono">offline edit replay</text>
-        `;
-      };
-
-      const renderDemoBars = (task, targetId, progress) => {
-        const originalRows = modeShares(task, targetId, task.originalSr);
-        const currentRows = modeShares(task, targetId, currentTargetShare(task, progress));
-        const rows = (title, items) => `
-          <div>
-            <h4>${title}</h4>
-            ${items.map((item) => `
-              <div class="mode-row">
-                <div class="mode-row-head">
-                  <span>${item.desired ? "desired: " : ""}${item.label}</span>
-                  <span>${fmt(item.share)}</span>
-                </div>
-                <div class="mode-track">
-                  <div class="mode-fill ${item.desired ? "desired" : ""}" style="width: ${item.share.toFixed(1)}%"></div>
-                </div>
-              </div>
-            `).join("")}
+          <div class="outcome-card">
+            <div class="outcome-head">
+              <strong>${title}</strong>
+              <span>${fmt(sr)} SR</span>
+            </div>
+            <div class="outcome-stack" aria-hidden="true">
+              <div class="outcome-segment target" style="width: ${parts.target.toFixed(1)}%"></div>
+              <div class="outcome-segment other" style="width: ${parts.other.toFixed(1)}%"></div>
+              <div class="outcome-segment fail" style="width: ${parts.fail.toFixed(1)}%"></div>
+            </div>
+            <div class="outcome-list">
+              <div class="outcome-item target"><span>target-aligned success</span><span>${fmt(parts.target)}</span></div>
+              <div class="outcome-item other"><span>completed wrong mode</span><span>${fmt(parts.other)}</span></div>
+              <div class="outcome-item fail"><span>failed rollout</span><span>${fmt(parts.fail)}</span></div>
+            </div>
+            <p class="demo-note">${detail}</p>
           </div>
         `;
-        return rows("Original mixed policy", originalRows) + rows("Current edited policy", currentRows);
-      };
-
-      const setDeploymentState = (stepIndex) => {
-        const original = document.getElementById("demo-deploy-original");
-        const edit = document.getElementById("demo-deploy-edit");
-        const final = document.getElementById("demo-deploy-final");
-        original.classList.toggle("active", stepIndex === 0);
-        edit.classList.toggle("active", stepIndex > 0 && stepIndex < demoStepValues.length - 1);
-        final.classList.toggle("active", stepIndex === demoStepValues.length - 1);
       };
 
       const renderDemo = () => {
         const task = demoTasks[demoState.taskId];
-        const progress = demoStepProgress[demoState.stepIndex];
         const target = task.modes.find((mode) => mode.id === demoState.targetId);
         const targetLabel = target ? target.label : task.modes[0].label;
+        const selected = target || task.modes[0];
+        const gain = selected.sr - task.originalSr;
 
         document.getElementById("demo-viz-title").textContent = `${task.label}: redirect toward ${targetLabel}`;
-        document.getElementById("demo-step-value").textContent = `${demoStepValues[demoState.stepIndex]}`;
+        document.getElementById("demo-viz-caption").textContent = "Representative edited rollout and reported outcome breakdown.";
         document.getElementById("demo-original-sr").textContent = fmt(task.originalSr);
-        document.getElementById("demo-more-sr").textContent = fmt(task.moreSr);
-        document.getElementById("demo-gain").textContent = `+${task.gain.toFixed(1)} pp`;
-        document.getElementById("demo-tcr").textContent = fmt(task.tcr);
-        document.getElementById("demo-svg").innerHTML = renderDemoScene(task, demoState.targetId, progress);
-        document.getElementById("demo-bars").innerHTML = renderDemoBars(task, demoState.targetId, progress);
+        document.getElementById("demo-more-sr").textContent = fmt(selected.sr);
+        document.getElementById("demo-gain").textContent = `${gain >= 0 ? "+" : ""}${gain.toFixed(1)} pp`;
+        document.getElementById("demo-tcr").textContent = fmt(selected.tcr);
 
-        const caption = document.getElementById("demo-viz-caption");
-        const badge = document.getElementById("demo-badge");
-        if (demoState.stepIndex === 0) {
-          caption.textContent = "Original mixed policy. Desired and undesired modes still coexist.";
-          badge.textContent = "mixed policy";
-        } else if (demoState.stepIndex === demoStepValues.length - 1) {
-          caption.textContent = "Edited checkpoint selected. Classifier is not loaded during deployment.";
-          badge.textContent = "deploy same sampler";
-        } else {
-          caption.textContent = "Offline edit in progress. The classifier supplies a weight-update signal only here.";
-          badge.textContent = "classifier active offline";
+        const video = document.getElementById("demo-video");
+        if (video.getAttribute("src") !== task.video) {
+          video.pause();
+          video.poster = task.poster;
+          video.src = task.video;
+          video.load();
+          video.play().catch(() => {});
         }
-        setDeploymentState(demoState.stepIndex);
+        document.getElementById("demo-traj").src = task.trajectory;
+        document.getElementById("demo-traj").alt = `${task.label} trajectory summary`;
+        document.getElementById("demo-video-caption").textContent = `Representative MoRE rollout for ${task.label}.`;
+        document.getElementById("demo-traj-caption").textContent = `Trajectory summary for ${task.label}; selected target: ${targetLabel}.`;
+
+        document.getElementById("demo-bars").innerHTML =
+          outcomeCard("Original mixed policy", task.originalSr, task.originalTcr, "Task-level average over target modes.") +
+          outcomeCard("Selected MoRE edit", selected.sr, selected.tcr, `Per-target result for ${targetLabel}.`);
       };
 
       const renderDemoControls = () => {
@@ -1356,12 +1277,7 @@
         }
       };
 
-      const stepSlider = document.getElementById("demo-step");
-      if (stepSlider) {
-        stepSlider.addEventListener("input", () => {
-          demoState.stepIndex = Number(stepSlider.value);
-          renderDemo();
-        });
+      if (document.getElementById("demo-task-tabs")) {
         renderDemoControls();
         renderDemo();
       }
