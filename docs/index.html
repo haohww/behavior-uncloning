@@ -7,20 +7,20 @@
     <meta name="description" content="Behavior Uncloning: distilling mode redirection into policy weights without inference-time steering.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Castoro:ital@0;1&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,650&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
       :root {
-        --ink: #1a1815;
-        --ink-soft: #4a4039;
-        --muted: #7a6e62;
-        --rule: #e2d9c2;
-        --bg: #fbf6ea;
-        --card: #fffefb;
-        --tint: #f4ecd8;
-        --accent: #2f6b4f;
-        --accent-soft: #dcebdc;
-        --warning: #8a4a2d;
-        --serif: "Castoro", "Noto Serif", Iowan Old Style, Georgia, serif;
+        --ink: #17211d;
+        --ink-soft: #3d4b47;
+        --muted: #687772;
+        --rule: #d7e2dd;
+        --bg: #f6faf8;
+        --card: #ffffff;
+        --tint: #e8f4f0;
+        --accent: #0c7278;
+        --accent-soft: #d9eeea;
+        --warning: #9a5a36;
+        --serif: "Fraunces", "Noto Serif", Iowan Old Style, Georgia, serif;
         --sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
         --max: 1720px;
@@ -46,7 +46,7 @@
         position: sticky;
         top: 0;
         z-index: 20;
-        background: rgba(251, 246, 234, 0.86);
+        background: rgba(246, 250, 248, 0.88);
         border-bottom: 1px solid var(--rule);
         backdrop-filter: blur(14px) saturate(140%);
       }
@@ -96,8 +96,8 @@
         margin: 0 auto 18px;
         font-family: var(--serif);
         font-size: clamp(3rem, 6.4vw, 6.2rem);
-        font-weight: 400;
-        line-height: 0.98;
+        font-weight: 650;
+        line-height: 0.94;
         letter-spacing: 0;
         white-space: nowrap;
       }
@@ -196,7 +196,7 @@
       h2 {
         margin: 0 0 16px;
         font-family: var(--serif);
-        font-weight: 400;
+        font-weight: 500;
         font-size: clamp(1.8rem, 4vw, 3rem);
         line-height: 1.12;
       }
@@ -218,13 +218,13 @@
       }
       .video-wrap {
         position: relative;
-        background: #e9e1ce;
+        background: #e6efec;
       }
       video {
         width: 100%;
         aspect-ratio: 16 / 9;
         object-fit: contain;
-        background: #e9e1ce;
+        background: #e6efec;
       }
       .carousel-caption h3,
       .stat-card h3,
@@ -407,7 +407,7 @@
         letter-spacing: 0.08em;
         text-transform: uppercase;
         color: var(--muted);
-        background: #f8f0dd;
+        background: #edf5f2;
       }
       tr:last-child td { border-bottom: 0; }
       .ours td {
