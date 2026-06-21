@@ -398,6 +398,214 @@
         white-space: nowrap;
       }
 
+      .demo-shell {
+        max-width: 1320px;
+        margin: 28px auto 0;
+        display: grid;
+        grid-template-columns: 340px minmax(0, 1fr);
+        border: 1px solid var(--rule);
+        border-radius: 8px;
+        background: var(--card);
+        overflow: hidden;
+      }
+      .demo-controls {
+        padding: 22px;
+        border-right: 1px solid var(--rule);
+        background: #fbfdfc;
+      }
+      .demo-control-group + .demo-control-group { margin-top: 22px; }
+      .demo-control-group h3 {
+        margin: 0 0 10px;
+        font-size: 0.86rem;
+        color: var(--muted);
+        font-family: var(--mono);
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+      .demo-button-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .demo-choice {
+        border: 1px solid var(--rule);
+        border-radius: 999px;
+        background: transparent;
+        color: var(--ink-soft);
+        cursor: pointer;
+        font: inherit;
+        font-size: 0.9rem;
+        padding: 7px 11px;
+      }
+      .demo-choice[aria-pressed="true"] {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: white;
+      }
+      .demo-slider {
+        width: 100%;
+        accent-color: var(--accent);
+      }
+      .demo-step-row {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 8px;
+      }
+      .demo-step-value {
+        color: var(--accent);
+        font-family: var(--mono);
+        font-size: 0.95rem;
+        font-weight: 600;
+      }
+      .demo-step-labels {
+        display: flex;
+        justify-content: space-between;
+        color: var(--muted);
+        font-family: var(--mono);
+        font-size: 0.68rem;
+        margin-top: 6px;
+      }
+      .demo-metrics {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+      .demo-metric {
+        padding: 12px;
+        border-radius: 8px;
+        background: var(--tint);
+      }
+      .demo-metric span {
+        display: block;
+        color: var(--muted);
+        font-size: 0.78rem;
+      }
+      .demo-metric strong {
+        display: block;
+        margin-top: 2px;
+        color: var(--ink);
+        font-family: var(--mono);
+        font-size: 1.02rem;
+      }
+      .demo-visual {
+        padding: 22px;
+      }
+      .demo-visual-head {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 18px;
+        margin-bottom: 14px;
+      }
+      .demo-visual-head h3 {
+        margin: 0;
+        font-size: 1.1rem;
+      }
+      .demo-status {
+        color: var(--muted);
+        font-size: 0.92rem;
+        margin: 4px 0 0;
+      }
+      .demo-badge {
+        flex: none;
+        border-radius: 999px;
+        background: var(--accent-soft);
+        color: var(--accent);
+        font-family: var(--mono);
+        font-size: 0.74rem;
+        font-weight: 600;
+        padding: 7px 10px;
+      }
+      .demo-stage {
+        border: 1px solid var(--rule);
+        border-radius: 8px;
+        background:
+          linear-gradient(rgba(215, 226, 221, 0.45) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(215, 226, 221, 0.45) 1px, transparent 1px),
+          #f8fbfa;
+        background-size: 32px 32px;
+        overflow: hidden;
+      }
+      .demo-stage svg {
+        display: block;
+        width: 100%;
+        aspect-ratio: 16 / 9;
+      }
+      .demo-bars {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+        margin-top: 18px;
+      }
+      .demo-bars h4 {
+        margin: 0 0 8px;
+        font-size: 0.92rem;
+      }
+      .mode-row + .mode-row { margin-top: 9px; }
+      .mode-row-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        color: var(--ink-soft);
+        font-size: 0.88rem;
+      }
+      .mode-track {
+        height: 10px;
+        margin-top: 5px;
+        border-radius: 999px;
+        background: #e3ece8;
+        overflow: hidden;
+      }
+      .mode-fill {
+        height: 100%;
+        width: 0;
+        border-radius: inherit;
+        background: var(--muted);
+        transition: width 260ms ease;
+      }
+      .mode-fill.desired { background: var(--accent); }
+      .deployment-path {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+        margin-top: 18px;
+      }
+      .deployment-step {
+        position: relative;
+        padding: 13px;
+        border-radius: 8px;
+        background: #f3f8f6;
+        color: var(--muted);
+        min-height: 100px;
+      }
+      .deployment-step strong {
+        display: block;
+        color: var(--ink);
+        margin-bottom: 5px;
+      }
+      .deployment-step.active {
+        outline: 2px solid var(--accent);
+        background: #edf8f5;
+      }
+      .deployment-step .tag {
+        display: inline-flex;
+        margin-top: 8px;
+        border-radius: 999px;
+        background: white;
+        color: var(--accent);
+        font-family: var(--mono);
+        font-size: 0.68rem;
+        padding: 4px 7px;
+      }
+      .demo-note {
+        margin: 12px 0 0;
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+
       .table-wrap {
         margin-top: 26px;
         overflow-x: auto;
@@ -480,6 +688,10 @@
         h1 { white-space: normal; }
         .highlights { grid-template-columns: repeat(2, minmax(0, 1fr)); }
         .method-flow { grid-template-columns: 1fr; }
+        .demo-shell { grid-template-columns: 1fr; }
+        .demo-controls { border-right: 0; border-bottom: 1px solid var(--rule); }
+        .demo-bars,
+        .deployment-path { grid-template-columns: 1fr; }
         .arrow { display: none; }
       }
       @media (max-width: 660px) {
@@ -490,6 +702,10 @@
         .carousel-controls { grid-template-columns: auto 1fr auto; gap: 10px; }
         .carousel-nav { width: 38px; height: 38px; }
         .section { padding: 42px 18px; }
+        .demo-controls,
+        .demo-visual { padding: 16px; }
+        .demo-visual-head { flex-direction: column; gap: 8px; }
+        .demo-metrics { grid-template-columns: 1fr; }
       }
     </style>
   </head>
@@ -500,6 +716,7 @@
         <div class="nav-links">
           <a href="#abstract">Abstract</a>
           <a href="#method">Method</a>
+          <a href="#demo">Demo</a>
           <a href="#simulation">Simulation</a>
           <a href="#robots">Real Robots</a>
         </div>
@@ -536,6 +753,7 @@
         <div class="cta">
           <span class="button disabled" aria-disabled="true">Paper coming soon</span>
           <a class="button" href="https://github.com/haohww/behavior-uncloning">Code</a>
+          <a class="button secondary" href="#demo">Interactive demo</a>
           <a class="button secondary" href="#supplementary">Supplementary video</a>
         </div>
       </section>
@@ -607,6 +825,99 @@
         </div>
         <div class="equation">
           L<sub>MoRE</sub> = retain_loss(desired samples) + gamma · redirect_loss(gated undesired samples)
+        </div>
+      </section>
+
+      <section id="demo" class="section left">
+        <div class="section-kicker">Interactive Demo</div>
+        <h2>Edit once, deploy the same policy interface.</h2>
+        <p class="lead">
+          Select a simulated task, choose the desired behavior mode, and scrub through the offline
+          edit. The visualization shows the target-mode rollout share increasing while undesired
+          modes are suppressed; after editing, the deployed policy no longer uses the classifier.
+        </p>
+        <div class="demo-shell">
+          <aside class="demo-controls" aria-label="Interactive mode edit controls">
+            <div class="demo-control-group">
+              <h3>Task</h3>
+              <div class="demo-button-grid" id="demo-task-tabs" role="tablist" aria-label="Simulation task selector"></div>
+            </div>
+            <div class="demo-control-group">
+              <h3>Desired mode</h3>
+              <div class="demo-button-grid" id="demo-target-buttons" aria-label="Desired mode selector"></div>
+            </div>
+            <div class="demo-control-group">
+              <div class="demo-step-row">
+                <h3>Edit steps</h3>
+                <span class="demo-step-value" id="demo-step-value">500</span>
+              </div>
+              <input class="demo-slider" id="demo-step" type="range" min="0" max="4" step="1" value="4" aria-label="Offline edit steps">
+              <div class="demo-step-labels" aria-hidden="true">
+                <span>0</span>
+                <span>50</span>
+                <span>100</span>
+                <span>200</span>
+                <span>500</span>
+              </div>
+            </div>
+            <div class="demo-control-group">
+              <h3>Reported outcome</h3>
+              <div class="demo-metrics">
+                <div class="demo-metric">
+                  <span>Original Avg SR</span>
+                  <strong id="demo-original-sr">37.0%</strong>
+                </div>
+                <div class="demo-metric">
+                  <span>MoRE Avg SR</span>
+                  <strong id="demo-more-sr">80.7%</strong>
+                </div>
+                <div class="demo-metric">
+                  <span>SR Gain</span>
+                  <strong id="demo-gain">+43.7 pp</strong>
+                </div>
+                <div class="demo-metric">
+                  <span>MoRE TCR</span>
+                  <strong id="demo-tcr">80.7%</strong>
+                </div>
+              </div>
+            </div>
+          </aside>
+          <div class="demo-visual">
+            <div class="demo-visual-head">
+              <div>
+                <h3 id="demo-viz-title">Push-Wall: redirect toward left</h3>
+                <p class="demo-status" id="demo-viz-caption">
+                  Edited checkpoint selected. Classifier is not loaded during deployment.
+                </p>
+              </div>
+              <span class="demo-badge" id="demo-badge">deploy same sampler</span>
+            </div>
+            <div class="demo-stage">
+              <svg id="demo-svg" viewBox="0 0 720 405" role="img" aria-labelledby="demo-viz-title demo-viz-caption"></svg>
+            </div>
+            <div class="demo-bars" id="demo-bars" aria-label="Mode distribution during editing"></div>
+            <div class="deployment-path" aria-label="MoRE deployment workflow">
+              <div class="deployment-step" id="demo-deploy-original">
+                <strong>Original policy</strong>
+                Mixed behavior modes learned from demonstrations.
+                <span class="tag">standard policy</span>
+              </div>
+              <div class="deployment-step" id="demo-deploy-edit">
+                <strong>Offline MoRE edit</strong>
+                A frozen mode classifier supplies the redirection loss.
+                <span class="tag">classifier used here</span>
+              </div>
+              <div class="deployment-step" id="demo-deploy-final">
+                <strong>Edited checkpoint</strong>
+                The deployed policy keeps the original inference path.
+                <span class="tag">no runtime steering</span>
+              </div>
+            </div>
+            <p class="demo-note">
+              This is a browser-side replay of reported task statistics with illustrative rollout traces;
+              it is designed to explain the offline edit and deployment workflow, not to run a full simulator.
+            </p>
+          </div>
         </div>
       </section>
 
@@ -776,6 +1087,285 @@
     </footer>
 
     <script>
+      const demoStepValues = [0, 50, 100, 200, 500];
+      const demoStepProgress = [0, 0.18, 0.4, 0.7, 1];
+      const demoTasks = {
+        pushwall: {
+          label: "Push-Wall",
+          modes: [
+            { id: "left", label: "left" },
+            { id: "right", label: "right" }
+          ],
+          defaultTarget: "left",
+          originalSr: 37.0,
+          moreSr: 80.7,
+          gain: 43.7,
+          tcr: 80.7,
+          paths: {
+            left: "M 78 322 C 156 318 172 230 252 222 C 330 214 394 164 474 116 C 540 76 594 67 646 84",
+            right: "M 78 322 C 160 342 220 302 278 258 C 350 204 404 205 488 186 C 548 172 606 130 646 84"
+          },
+          labels: {
+            left: [490, 102],
+            right: [500, 204]
+          },
+          decor: "wall"
+        },
+        pusht: {
+          label: "Push-T",
+          modes: [
+            { id: "left", label: "left" },
+            { id: "right", label: "right" }
+          ],
+          defaultTarget: "left",
+          originalSr: 50.0,
+          moreSr: 98.3,
+          gain: 48.3,
+          tcr: 98.7,
+          paths: {
+            left: "M 90 318 C 172 286 218 234 286 198 C 358 160 420 118 536 102 C 588 94 626 98 660 114",
+            right: "M 90 318 C 174 322 232 288 302 246 C 374 204 432 204 532 226 C 592 240 636 224 660 196"
+          },
+          labels: {
+            left: [536, 88],
+            right: [532, 244]
+          },
+          decor: "pusht"
+        },
+        pushpillars: {
+          label: "Push-Pillars",
+          modes: [
+            { id: "L", label: "L" },
+            { id: "LG", label: "LG" },
+            { id: "RG", label: "RG" },
+            { id: "R", label: "R" }
+          ],
+          defaultTarget: "RG",
+          originalSr: 21.5,
+          moreSr: 72.3,
+          gain: 50.8,
+          tcr: 80.7,
+          paths: {
+            L: "M 74 324 C 154 290 188 194 272 150 C 368 100 494 88 646 110",
+            LG: "M 74 324 C 158 286 224 236 304 210 C 414 174 526 142 646 128",
+            RG: "M 74 324 C 160 326 238 292 326 252 C 430 204 542 184 646 154",
+            R: "M 74 324 C 160 352 252 334 352 300 C 456 264 552 224 646 178"
+          },
+          labels: {
+            L: [504, 88],
+            LG: [520, 130],
+            RG: [526, 174],
+            R: [522, 228]
+          },
+          decor: "pillars"
+        },
+        quadruped: {
+          label: "Quadruped",
+          modes: [
+            { id: "left", label: "left route" },
+            { id: "right", label: "right route" }
+          ],
+          defaultTarget: "left",
+          originalSr: 50.0,
+          moreSr: 84.3,
+          gain: 34.3,
+          tcr: 84.7,
+          paths: {
+            left: "M 70 316 C 138 284 194 220 270 180 C 348 140 454 126 642 126",
+            right: "M 70 316 C 154 348 238 338 326 300 C 414 262 514 214 642 166"
+          },
+          labels: {
+            left: [500, 108],
+            right: [510, 198]
+          },
+          decor: "quadruped"
+        }
+      };
+
+      const demoState = { taskId: "pushwall", targetId: "left", stepIndex: 4 };
+      const demoColors = ["#8aa19a", "#9a8d76", "#7896a8", "#a7868c"];
+
+      const fmt = (value) => `${value.toFixed(1)}%`;
+      const currentTargetShare = (task, progress) => task.originalSr + (task.moreSr - task.originalSr) * progress;
+      const modeShares = (task, targetId, targetShare) => {
+        const remaining = Math.max(0, 100 - targetShare);
+        const otherShare = task.modes.length > 1 ? remaining / (task.modes.length - 1) : remaining;
+        return task.modes.map((mode) => ({
+          ...mode,
+          share: mode.id === targetId ? targetShare : otherShare,
+          desired: mode.id === targetId
+        }));
+      };
+      const pathEndpoint = (path) => {
+        const coords = path.match(/-?\d+(?:\.\d+)?/g).map(Number);
+        return [coords[coords.length - 2], coords[coords.length - 1]];
+      };
+
+      const sceneDecor = (kind) => {
+        if (kind === "wall") {
+          return `
+            <rect x="326" y="136" width="62" height="150" rx="8" fill="#d9e4df" stroke="#b7c8c1" stroke-width="2"/>
+            <text x="357" y="222" text-anchor="middle" fill="#687772" font-size="14" font-family="Inter">wall</text>
+          `;
+        }
+        if (kind === "pillars") {
+          return `
+            <circle cx="296" cy="170" r="26" fill="#d9e4df" stroke="#b7c8c1" stroke-width="2"/>
+            <circle cx="384" cy="222" r="28" fill="#d9e4df" stroke="#b7c8c1" stroke-width="2"/>
+            <circle cx="472" cy="160" r="24" fill="#d9e4df" stroke="#b7c8c1" stroke-width="2"/>
+          `;
+        }
+        if (kind === "quadruped") {
+          return `
+            <path d="M 48 270 C 130 246 192 250 260 230 C 342 206 412 218 502 190 C 574 168 628 170 684 150 L 684 360 L 48 360 Z" fill="#e2ece8" opacity="0.86"/>
+            <path d="M 48 270 C 130 246 192 250 260 230 C 342 206 412 218 502 190 C 574 168 628 170 684 150" fill="none" stroke="#b7c8c1" stroke-width="2"/>
+          `;
+        }
+        return `
+          <path d="M 492 96 L 618 96 L 618 156 L 568 156 L 568 248 L 492 248 Z" fill="#d9e4df" stroke="#b7c8c1" stroke-width="2"/>
+          <text x="552" y="134" text-anchor="middle" fill="#687772" font-size="14" font-family="Inter">T goal</text>
+        `;
+      };
+
+      const renderDemoScene = (task, targetId, progress) => {
+        const [goalX, goalY] = pathEndpoint(task.paths[targetId]);
+        const pathMarkup = task.modes.map((mode, modeIndex) => {
+          const isDesired = mode.id === targetId;
+          const opacity = isDesired ? 0.36 + 0.58 * progress : 0.42 - 0.32 * progress;
+          const width = isDesired ? 8 : 5;
+          const stroke = isDesired ? "#0c7278" : demoColors[modeIndex % demoColors.length];
+          const dash = isDesired ? "" : `stroke-dasharray="${progress > 0.65 ? "8 10" : "0"}"`;
+          const id = isDesired ? "id=\"demo-selected-path\"" : "";
+          const [labelX, labelY] = task.labels[mode.id];
+          return `
+            <path ${id} d="${task.paths[mode.id]}" fill="none" stroke="${stroke}" stroke-width="${width}" stroke-linecap="round" opacity="${opacity.toFixed(2)}" ${dash}/>
+            <text x="${labelX}" y="${labelY}" fill="${stroke}" opacity="${Math.max(0.34, opacity).toFixed(2)}" font-size="14" font-family="Inter" font-weight="${isDesired ? 700 : 500}">${mode.label}</text>
+          `;
+        }).join("");
+
+        return `
+          <defs>
+            <filter id="demo-shadow" x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="0" dy="5" stdDeviation="5" flood-color="#17211d" flood-opacity="0.16"/>
+            </filter>
+          </defs>
+          ${sceneDecor(task.decor)}
+          ${pathMarkup}
+          <circle cx="78" cy="322" r="13" fill="#17211d" filter="url(#demo-shadow)"/>
+          <text x="78" y="354" text-anchor="middle" fill="#3d4b47" font-size="13" font-family="Inter">start</text>
+          <circle cx="${goalX}" cy="${goalY}" r="14" fill="#0c7278" opacity="0.9" filter="url(#demo-shadow)"/>
+          <text x="${goalX}" y="${Math.max(28, goalY - 22)}" text-anchor="middle" fill="#3d4b47" font-size="13" font-family="Inter">desired goal</text>
+          <circle r="9" fill="#0c7278" stroke="white" stroke-width="3" filter="url(#demo-shadow)">
+            <animateMotion dur="3.4s" repeatCount="indefinite" rotate="auto">
+              <mpath href="#demo-selected-path"></mpath>
+            </animateMotion>
+          </circle>
+          <text x="34" y="32" fill="#687772" font-size="13" font-family="JetBrains Mono">offline edit replay</text>
+        `;
+      };
+
+      const renderDemoBars = (task, targetId, progress) => {
+        const originalRows = modeShares(task, targetId, task.originalSr);
+        const currentRows = modeShares(task, targetId, currentTargetShare(task, progress));
+        const rows = (title, items) => `
+          <div>
+            <h4>${title}</h4>
+            ${items.map((item) => `
+              <div class="mode-row">
+                <div class="mode-row-head">
+                  <span>${item.desired ? "desired: " : ""}${item.label}</span>
+                  <span>${fmt(item.share)}</span>
+                </div>
+                <div class="mode-track">
+                  <div class="mode-fill ${item.desired ? "desired" : ""}" style="width: ${item.share.toFixed(1)}%"></div>
+                </div>
+              </div>
+            `).join("")}
+          </div>
+        `;
+        return rows("Original mixed policy", originalRows) + rows("Current edited policy", currentRows);
+      };
+
+      const setDeploymentState = (stepIndex) => {
+        const original = document.getElementById("demo-deploy-original");
+        const edit = document.getElementById("demo-deploy-edit");
+        const final = document.getElementById("demo-deploy-final");
+        original.classList.toggle("active", stepIndex === 0);
+        edit.classList.toggle("active", stepIndex > 0 && stepIndex < demoStepValues.length - 1);
+        final.classList.toggle("active", stepIndex === demoStepValues.length - 1);
+      };
+
+      const renderDemo = () => {
+        const task = demoTasks[demoState.taskId];
+        const progress = demoStepProgress[demoState.stepIndex];
+        const target = task.modes.find((mode) => mode.id === demoState.targetId);
+        const targetLabel = target ? target.label : task.modes[0].label;
+
+        document.getElementById("demo-viz-title").textContent = `${task.label}: redirect toward ${targetLabel}`;
+        document.getElementById("demo-step-value").textContent = `${demoStepValues[demoState.stepIndex]}`;
+        document.getElementById("demo-original-sr").textContent = fmt(task.originalSr);
+        document.getElementById("demo-more-sr").textContent = fmt(task.moreSr);
+        document.getElementById("demo-gain").textContent = `+${task.gain.toFixed(1)} pp`;
+        document.getElementById("demo-tcr").textContent = fmt(task.tcr);
+        document.getElementById("demo-svg").innerHTML = renderDemoScene(task, demoState.targetId, progress);
+        document.getElementById("demo-bars").innerHTML = renderDemoBars(task, demoState.targetId, progress);
+
+        const caption = document.getElementById("demo-viz-caption");
+        const badge = document.getElementById("demo-badge");
+        if (demoState.stepIndex === 0) {
+          caption.textContent = "Original mixed policy. Desired and undesired modes still coexist.";
+          badge.textContent = "mixed policy";
+        } else if (demoState.stepIndex === demoStepValues.length - 1) {
+          caption.textContent = "Edited checkpoint selected. Classifier is not loaded during deployment.";
+          badge.textContent = "deploy same sampler";
+        } else {
+          caption.textContent = "Offline edit in progress. The classifier supplies a weight-update signal only here.";
+          badge.textContent = "classifier active offline";
+        }
+        setDeploymentState(demoState.stepIndex);
+      };
+
+      const renderDemoControls = () => {
+        const taskTabs = document.getElementById("demo-task-tabs");
+        const targetButtons = document.getElementById("demo-target-buttons");
+        if (!taskTabs || !targetButtons) return;
+
+        taskTabs.innerHTML = Object.entries(demoTasks).map(([taskId, task]) => `
+          <button class="demo-choice" type="button" role="tab" aria-pressed="${taskId === demoState.taskId ? "true" : "false"}" data-demo-task="${taskId}">${task.label}</button>
+        `).join("");
+
+        const task = demoTasks[demoState.taskId];
+        targetButtons.innerHTML = task.modes.map((mode) => `
+          <button class="demo-choice" type="button" aria-pressed="${mode.id === demoState.targetId ? "true" : "false"}" data-demo-target="${mode.id}">${mode.label}</button>
+        `).join("");
+
+        for (const button of taskTabs.querySelectorAll("[data-demo-task]")) {
+          button.addEventListener("click", () => {
+            demoState.taskId = button.dataset.demoTask;
+            demoState.targetId = demoTasks[demoState.taskId].defaultTarget;
+            renderDemoControls();
+            renderDemo();
+          });
+        }
+        for (const button of targetButtons.querySelectorAll("[data-demo-target]")) {
+          button.addEventListener("click", () => {
+            demoState.targetId = button.dataset.demoTarget;
+            renderDemoControls();
+            renderDemo();
+          });
+        }
+      };
+
+      const stepSlider = document.getElementById("demo-step");
+      if (stepSlider) {
+        stepSlider.addEventListener("input", () => {
+          demoState.stepIndex = Number(stepSlider.value);
+          renderDemo();
+        });
+        renderDemoControls();
+        renderDemo();
+      }
+
       const carouselData = {
         simulation: [
           {
