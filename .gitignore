@@ -4,6 +4,7 @@ __pycache__/
 .mypy_cache/
 .ruff_cache/
 .coverage
+.site-check/
 *.egg-info/
 outputs/
 checkpoints/
@@ -12,3 +13,4 @@ checkpoints/
 *.pth
 paper.pdf
 *_CoRL2026__Behavior_Uncloning*.pdf
+/videos/
