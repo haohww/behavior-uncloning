@@ -82,3 +82,14 @@ and the gate applies redirection only when the source-mode probability is below
 ## Citation
 
 Citation information will be added after release.
+
+## Project Website
+
+The static project website lives in `docs/` and is also pushed to the
+`gh-pages` branch for GitHub Pages deployment.
+
+To publish it on GitHub Pages, enable Pages in the repository settings and use:
+
+- Source: `Deploy from a branch`
+- Branch: `gh-pages`
+- Folder: `/root`
