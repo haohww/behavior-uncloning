@@ -47,6 +47,16 @@
       a { color: var(--accent); text-decoration: none; }
       a:hover { text-decoration: underline; text-underline-offset: 3px; }
       img, video { display: block; max-width: 100%; }
+      .nowrap { white-space: nowrap; }
+      .abstract p,
+      .stat-card p,
+      .method-card p,
+      .card-body p,
+      .demo-note,
+      .outcome-item,
+      footer {
+        text-wrap: pretty;
+      }
 
       .nav {
         position: sticky;
@@ -108,12 +118,13 @@
         white-space: nowrap;
       }
       .subtitle {
-        max-width: 760px;
+        max-width: 1040px;
         margin: 0 auto 18px;
         font-family: var(--serif);
         color: var(--ink-soft);
         font-size: clamp(1.12rem, 2.4vw, 1.45rem);
         line-height: 1.42;
+        text-wrap: balance;
       }
       .authors {
         max-width: 980px;
@@ -215,12 +226,14 @@
         font-weight: 500;
         font-size: clamp(1.8rem, 4vw, 3rem);
         line-height: 1.12;
+        text-wrap: balance;
       }
       .lead {
         max-width: var(--narrow);
         margin: 0 auto 26px;
         color: var(--ink-soft);
         font-size: 1.06rem;
+        text-wrap: balance;
       }
       .left .lead { margin-left: 0; }
 
@@ -424,8 +437,8 @@
         text-transform: uppercase;
       }
       .demo-button-grid {
-        display: flex;
-        flex-wrap: wrap;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 8px;
       }
       .demo-choice {
@@ -437,6 +450,7 @@
         font: inherit;
         font-size: 0.9rem;
         padding: 7px 11px;
+        text-align: center;
       }
       .demo-choice[aria-pressed="true"] {
         background: var(--accent);
@@ -483,6 +497,7 @@
         color: var(--muted);
         font-size: 0.92rem;
         margin: 4px 0 0;
+        text-wrap: balance;
       }
       .demo-badge {
         flex: none;
@@ -529,6 +544,7 @@
         margin-top: 3px;
         color: var(--muted);
         font-size: 0.84rem;
+        text-wrap: balance;
       }
       .demo-bars {
         display: grid;
@@ -669,6 +685,7 @@
         margin: 10px 0 0;
         color: var(--muted);
         font-size: 0.9rem;
+        text-wrap: balance;
       }
 
       .wide-video {
@@ -731,7 +748,7 @@
       <section class="hero">
         <div class="eyebrow">Preprint · 2026</div>
         <h1>Behavior Uncloning</h1>
-        <p class="subtitle">Distilling Mode Redirection into Policy Weights without Inference-Time Steering</p>
+        <p class="subtitle">Distilling Mode Redirection into Policy Weights without <span class="nowrap">Inference-Time Steering</span></p>
         <p class="authors">
           <a href="https://haohww.github.io/">Hao Wang</a><sup>1,†</sup>,
           <a href="https://scholar.google.com/citations?hl=en&amp;user=X52xke0AAAAJ">Jiuzhou Lei</a><sup>1</sup>,
