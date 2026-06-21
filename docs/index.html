@@ -496,7 +496,7 @@
       }
       .demo-media-grid {
         display: grid;
-        grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.85fr);
+        grid-template-columns: minmax(0, 1fr);
         gap: 14px;
       }
       .demo-media-card {
@@ -605,35 +605,6 @@
       .outcome-item.target span:first-child::before { background: var(--accent); }
       .outcome-item.other span:first-child::before { background: #9a8d76; }
       .outcome-item.fail span:first-child::before { background: #d8e1dd; border: 1px solid #b8c9c2; }
-      .deployment-path {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 10px;
-        margin-top: 18px;
-      }
-      .deployment-step {
-        position: relative;
-        padding: 13px;
-        border-radius: 8px;
-        background: #f3f8f6;
-        color: var(--muted);
-        min-height: 100px;
-      }
-      .deployment-step strong {
-        display: block;
-        color: var(--ink);
-        margin-bottom: 5px;
-      }
-      .deployment-step .tag {
-        display: inline-flex;
-        margin-top: 8px;
-        border-radius: 999px;
-        background: white;
-        color: var(--accent);
-        font-family: var(--mono);
-        font-size: 0.68rem;
-        padding: 4px 7px;
-      }
       .demo-note {
         margin: 12px 0 0;
         color: var(--muted);
@@ -725,8 +696,7 @@
         .demo-shell { grid-template-columns: 1fr; }
         .demo-controls { border-right: 0; border-bottom: 1px solid var(--rule); }
         .demo-media-grid,
-        .demo-bars,
-        .deployment-path { grid-template-columns: 1fr; }
+        .demo-bars { grid-template-columns: 1fr; }
         .arrow { display: none; }
       }
       @media (max-width: 660px) {
@@ -752,7 +722,6 @@
           <a href="#abstract">Abstract</a>
           <a href="#method">Method</a>
           <a href="#demo">Demo</a>
-          <a href="#simulation">Simulation</a>
           <a href="#robots">Real Robots</a>
         </div>
       </div>
@@ -867,19 +836,15 @@
         <div class="section-kicker">Interactive Demo</div>
         <h2>Edit once, deploy the same policy interface.</h2>
         <p class="lead">
-          Select a simulated task and desired behavior mode. The explorer switches between actual
-          rollout media and reported rollout outcomes, making the deployment claim explicit: MoRE
-          changes the checkpoint offline, while runtime inference keeps the original policy path.
+          Select a simulated task to inspect its representative MoRE rollout, trajectory summary,
+          and reported outcome breakdown. MoRE changes the checkpoint offline, while runtime
+          inference keeps the original policy path.
         </p>
         <div class="demo-shell">
           <aside class="demo-controls" aria-label="Interactive mode edit controls">
             <div class="demo-control-group">
               <h3>Task</h3>
               <div class="demo-button-grid" id="demo-task-tabs" role="tablist" aria-label="Simulation task selector"></div>
-            </div>
-            <div class="demo-control-group">
-              <h3>Desired mode</h3>
-              <div class="demo-button-grid" id="demo-target-buttons" aria-label="Desired mode selector"></div>
             </div>
             <div class="demo-control-group">
               <h3>Reported outcome</h3>
@@ -889,7 +854,7 @@
                   <strong id="demo-original-sr">37.0%</strong>
                 </div>
                 <div class="demo-metric">
-                  <span>Selected MoRE SR</span>
+                  <span>MoRE Avg SR</span>
                   <strong id="demo-more-sr">80.7%</strong>
                 </div>
                 <div class="demo-metric">
@@ -903,14 +868,13 @@
               </div>
             </div>
             <p class="demo-note">
-              Original values use the task-level Avg SR/TCR from the paper table. MoRE values use
-              per-target results where available.
+              Values report average SR/TCR over target modes from the simulated benchmark.
             </p>
           </aside>
           <div class="demo-visual">
             <div class="demo-visual-head">
               <div>
-                <h3 id="demo-viz-title">Push-Wall: redirect toward left</h3>
+                <h3 id="demo-viz-title">Push-Wall: MoRE edited rollout</h3>
                 <p class="demo-status" id="demo-viz-caption">
                   Representative edited rollout and reported outcome breakdown.
                 </p>
@@ -934,53 +898,12 @@
               </figure>
             </div>
             <div class="demo-bars" id="demo-bars" aria-label="Reported rollout outcome breakdown"></div>
-            <div class="deployment-path" aria-label="MoRE deployment workflow">
-              <div class="deployment-step">
-                <strong>Original policy</strong>
-                Mixed behavior modes learned from demonstrations.
-                <span class="tag">standard policy</span>
-              </div>
-              <div class="deployment-step">
-                <strong>Offline MoRE edit</strong>
-                A frozen mode classifier supplies the redirection loss.
-                <span class="tag">used only here</span>
-              </div>
-              <div class="deployment-step">
-                <strong>Edited checkpoint</strong>
-                The deployed policy keeps the original inference path.
-                <span class="tag">no runtime steering</span>
-              </div>
-            </div>
             <p class="demo-note">
               This is not a browser physics simulator. It is an interactive artifact viewer over the
               released project media and the paper's SR/TCR definitions: SR is target-aligned task
               success, while TCR counts task completion regardless of mode.
             </p>
           </div>
-        </div>
-      </section>
-
-      <section id="simulation" class="section left">
-        <div class="section-kicker">Simulated Diffusion Policy Results</div>
-        <h2>Behavior uncloning redirects simulated policy rollouts.</h2>
-        <p class="lead">
-          In simulation, MoRE improves deployment success across Diffusion Policy benchmarks while
-          keeping the policy's original sampler and control interface.
-        </p>
-        <div class="carousel-shell" data-carousel="simulation" aria-label="Simulation rollout carousel">
-          <div class="video-wrap">
-            <video class="carousel-video" autoplay muted playsinline preload="metadata" poster="assets/images/sim_pusht_poster.png" src="assets/videos/sim_pusht.mp4"></video>
-            <button class="fs" type="button" aria-label="Fullscreen simulation video">fullscreen</button>
-          </div>
-          <div class="carousel-controls">
-            <button class="carousel-nav" type="button" data-carousel-prev aria-label="Previous simulation video">‹</button>
-            <div class="carousel-caption">
-              <h3 data-carousel-title>Push-T</h3>
-              <p data-carousel-caption>SR: 50.0 → 98.3 (+48.3)</p>
-            </div>
-            <button class="carousel-nav" type="button" data-carousel-next aria-label="Next simulation video">›</button>
-          </div>
-          <div class="carousel-dots" aria-label="Simulation video selector"></div>
         </div>
         <div class="table-wrap">
           <table aria-label="Simulated task deployment success improvements">
@@ -1132,58 +1055,48 @@
           video: "assets/videos/sim_push_wall.mp4",
           poster: "assets/images/sim_push_wall_poster.png",
           trajectory: "assets/images/push_wall_traj.png",
-          modes: [
-            { id: "left", label: "left", sr: 80.7, tcr: 80.7 },
-            { id: "right", label: "right", sr: 80.7, tcr: 80.7 }
-          ],
-          defaultTarget: "left",
           originalSr: 37.0,
-          originalTcr: 74.0
+          originalTcr: 74.0,
+          moreSr: 80.7,
+          moreTcr: 80.7,
+          modesText: "left or right"
         },
         pusht: {
           label: "Push-T",
           video: "assets/videos/sim_pusht.mp4",
           poster: "assets/images/sim_pusht_poster.png",
           trajectory: "assets/images/pusht_traj.png",
-          modes: [
-            { id: "left", label: "left", sr: 100.0, tcr: 100.0 },
-            { id: "right", label: "right", sr: 96.7, tcr: 97.3 }
-          ],
-          defaultTarget: "left",
           originalSr: 50.0,
-          originalTcr: 100.0
+          originalTcr: 100.0,
+          moreSr: 98.3,
+          moreTcr: 98.7,
+          modesText: "left or right"
         },
         pushpillars: {
           label: "Push-Pillars",
           video: "assets/videos/sim_push_pillars.mp4",
           poster: "assets/images/sim_push_pillars_poster.png",
           trajectory: "assets/images/push_pillars_traj.png",
-          modes: [
-            { id: "L", label: "L", sr: 50.7, tcr: 51.3 },
-            { id: "LG", label: "LG", sr: 96.0, tcr: 99.3 },
-            { id: "RG", label: "RG", sr: 70.7, tcr: 98.7 },
-            { id: "R", label: "R", sr: 72.0, tcr: 73.3 }
-          ],
-          defaultTarget: "RG",
           originalSr: 21.5,
-          originalTcr: 86.0
+          originalTcr: 86.0,
+          moreSr: 72.3,
+          moreTcr: 80.7,
+          modesText: "four routes"
         },
         quadruped: {
           label: "Quadruped",
           video: "assets/videos/sim_quadruped.mp4",
           poster: "assets/images/sim_quadruped_poster.png",
           trajectory: "assets/images/quadruped_traj.png",
-          modes: [
-            { id: "left", label: "left route", sr: 95.3, tcr: 95.3 },
-            { id: "right", label: "right route", sr: 73.3, tcr: 74.0 }
-          ],
-          defaultTarget: "left",
           originalSr: 50.0,
-          originalTcr: 100.0
+          originalTcr: 100.0,
+          moreSr: 84.3,
+          moreTcr: 84.7,
+          modesText: "left or right"
         }
       };
 
-      const demoState = { taskId: "pushwall", targetId: "left" };
+      const demoState = { taskId: "pushwall" };
 
       const fmt = (value) => `${value.toFixed(1)}%`;
       const outcomeParts = (sr, tcr) => ({
@@ -1216,17 +1129,14 @@
 
       const renderDemo = () => {
         const task = demoTasks[demoState.taskId];
-        const target = task.modes.find((mode) => mode.id === demoState.targetId);
-        const targetLabel = target ? target.label : task.modes[0].label;
-        const selected = target || task.modes[0];
-        const gain = selected.sr - task.originalSr;
+        const gain = task.moreSr - task.originalSr;
 
-        document.getElementById("demo-viz-title").textContent = `${task.label}: redirect toward ${targetLabel}`;
+        document.getElementById("demo-viz-title").textContent = `${task.label}: MoRE edited rollout`;
         document.getElementById("demo-viz-caption").textContent = "Representative edited rollout and reported outcome breakdown.";
         document.getElementById("demo-original-sr").textContent = fmt(task.originalSr);
-        document.getElementById("demo-more-sr").textContent = fmt(selected.sr);
+        document.getElementById("demo-more-sr").textContent = fmt(task.moreSr);
         document.getElementById("demo-gain").textContent = `${gain >= 0 ? "+" : ""}${gain.toFixed(1)} pp`;
-        document.getElementById("demo-tcr").textContent = fmt(selected.tcr);
+        document.getElementById("demo-tcr").textContent = fmt(task.moreTcr);
 
         const video = document.getElementById("demo-video");
         if (video.getAttribute("src") !== task.video) {
@@ -1239,38 +1149,24 @@
         document.getElementById("demo-traj").src = task.trajectory;
         document.getElementById("demo-traj").alt = `${task.label} trajectory summary`;
         document.getElementById("demo-video-caption").textContent = `Representative MoRE rollout for ${task.label}.`;
-        document.getElementById("demo-traj-caption").textContent = `Trajectory summary for ${task.label}; selected target: ${targetLabel}.`;
+        document.getElementById("demo-traj-caption").textContent = `Trajectory summary for ${task.label}; modes: ${task.modesText}.`;
 
         document.getElementById("demo-bars").innerHTML =
           outcomeCard("Original mixed policy", task.originalSr, task.originalTcr, "Task-level average over target modes.") +
-          outcomeCard("Selected MoRE edit", selected.sr, selected.tcr, `Per-target result for ${targetLabel}.`);
+          outcomeCard("MoRE edited policy", task.moreSr, task.moreTcr, "Task-level average over target modes.");
       };
 
       const renderDemoControls = () => {
         const taskTabs = document.getElementById("demo-task-tabs");
-        const targetButtons = document.getElementById("demo-target-buttons");
-        if (!taskTabs || !targetButtons) return;
+        if (!taskTabs) return;
 
         taskTabs.innerHTML = Object.entries(demoTasks).map(([taskId, task]) => `
           <button class="demo-choice" type="button" role="tab" aria-pressed="${taskId === demoState.taskId ? "true" : "false"}" data-demo-task="${taskId}">${task.label}</button>
         `).join("");
 
-        const task = demoTasks[demoState.taskId];
-        targetButtons.innerHTML = task.modes.map((mode) => `
-          <button class="demo-choice" type="button" aria-pressed="${mode.id === demoState.targetId ? "true" : "false"}" data-demo-target="${mode.id}">${mode.label}</button>
-        `).join("");
-
         for (const button of taskTabs.querySelectorAll("[data-demo-task]")) {
           button.addEventListener("click", () => {
             demoState.taskId = button.dataset.demoTask;
-            demoState.targetId = demoTasks[demoState.taskId].defaultTarget;
-            renderDemoControls();
-            renderDemo();
-          });
-        }
-        for (const button of targetButtons.querySelectorAll("[data-demo-target]")) {
-          button.addEventListener("click", () => {
-            demoState.targetId = button.dataset.demoTarget;
             renderDemoControls();
             renderDemo();
           });
@@ -1283,32 +1179,6 @@
       }
 
       const carouselData = {
-        simulation: [
-          {
-            title: "Push-T",
-            caption: "SR: 50.0 → 98.3 (+48.3)",
-            src: "assets/videos/sim_pusht.mp4",
-            poster: "assets/images/sim_pusht_poster.png"
-          },
-          {
-            title: "Push-Wall",
-            caption: "SR: 37.0 → 80.7 (+43.7)",
-            src: "assets/videos/sim_push_wall.mp4",
-            poster: "assets/images/sim_push_wall_poster.png"
-          },
-          {
-            title: "Push-Pillars",
-            caption: "SR: 21.5 → 72.3 (+50.8)",
-            src: "assets/videos/sim_push_pillars.mp4",
-            poster: "assets/images/sim_push_pillars_poster.png"
-          },
-          {
-            title: "Quadruped",
-            caption: "SR: 50.0 → 84.3 (+34.3)",
-            src: "assets/videos/sim_quadruped.mp4",
-            poster: "assets/images/sim_quadruped_poster.png"
-          }
-        ],
         robots: [
           {
             title: "Knife handover",
