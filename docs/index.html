@@ -181,15 +181,7 @@
       }
       .left .lead { margin-left: 0; }
 
-      .video-grid,
-      .rollout-grid {
-        display: grid;
-        gap: 22px;
-        text-align: left;
-      }
-      .video-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-      .rollout-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .video-card,
+      .carousel-shell,
       .stat-card,
       .method-card {
         border: 1px solid var(--rule);
@@ -204,10 +196,10 @@
       video {
         width: 100%;
         aspect-ratio: 16 / 9;
-        object-fit: cover;
+        object-fit: contain;
         background: #e9e1ce;
       }
-      .video-card h3,
+      .carousel-caption h3,
       .stat-card h3,
       .method-card h3 {
         margin: 0;
@@ -215,13 +207,11 @@
         line-height: 1.3;
       }
       .card-body { padding: 13px 14px 15px; }
-      .rollout-grid .card-body { padding: 16px 18px 18px; }
       .card-body p {
         margin: 7px 0 0;
         color: var(--muted);
         font-size: 0.92rem;
       }
-      .rollout-grid .card-body p { font-size: 0.98rem; }
       .fs {
         position: absolute;
         right: 8px;
@@ -234,6 +224,65 @@
         font-family: var(--mono);
         font-size: 0.75rem;
         cursor: pointer;
+      }
+      .carousel-shell {
+        max-width: 1120px;
+        margin: 26px auto 0;
+      }
+      .carousel-controls {
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        align-items: center;
+        gap: 16px;
+        padding: 16px 18px 8px;
+      }
+      .carousel-caption {
+        min-width: 0;
+        text-align: center;
+      }
+      .carousel-caption p {
+        margin: 6px 0 0;
+        color: var(--muted);
+        font-size: 0.98rem;
+      }
+      .carousel-nav {
+        display: inline-flex;
+        width: 42px;
+        height: 42px;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--rule);
+        border-radius: 999px;
+        background: var(--card);
+        color: var(--ink);
+        font-size: 1.35rem;
+        cursor: pointer;
+      }
+      .carousel-nav:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+      .carousel-dots {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+        padding: 4px 18px 18px;
+      }
+      .carousel-dot {
+        border: 1px solid var(--rule);
+        border-radius: 999px;
+        padding: 6px 10px;
+        background: transparent;
+        color: var(--muted);
+        font: inherit;
+        font-size: 0.82rem;
+        cursor: pointer;
+      }
+      .carousel-dot[aria-current="true"] {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: white;
       }
 
       .abstract {
@@ -376,8 +425,6 @@
 
       @media (max-width: 980px) {
         h1 { white-space: normal; }
-        .video-grid,
-        .rollout-grid,
         .highlights { grid-template-columns: repeat(2, minmax(0, 1fr)); }
         .method-flow { grid-template-columns: 1fr; }
         .arrow { display: none; }
@@ -386,9 +433,9 @@
         .nav-inner { align-items: flex-start; flex-direction: column; gap: 8px; }
         .nav-links { margin-left: 0; justify-content: flex-start; gap: 11px 16px; }
         .hero { padding-top: 42px; }
-        .video-grid,
-        .rollout-grid,
         .highlights { grid-template-columns: 1fr; }
+        .carousel-controls { grid-template-columns: auto 1fr auto; gap: 10px; }
+        .carousel-nav { width: 38px; height: 38px; }
         .section { padding: 42px 18px; }
       }
     </style>
@@ -500,47 +547,20 @@
           In simulation, MoRE improves deployment success across Diffusion Policy benchmarks while
           keeping the policy's original sampler and control interface.
         </p>
-        <div class="rollout-grid" aria-label="Simulation rollout videos">
-          <article class="video-card">
-            <div class="video-wrap">
-              <video class="rollout-video" autoplay muted loop playsinline preload="metadata" poster="assets/images/sim_pusht_poster.png" src="assets/videos/sim_pusht.mp4"></video>
-              <button class="fs" type="button" aria-label="Fullscreen Push-T video">fullscreen</button>
+        <div class="carousel-shell" data-carousel="simulation" aria-label="Simulation rollout carousel">
+          <div class="video-wrap">
+            <video class="carousel-video" autoplay muted playsinline preload="metadata" poster="assets/images/sim_pusht_poster.png" src="assets/videos/sim_pusht.mp4"></video>
+            <button class="fs" type="button" aria-label="Fullscreen simulation video">fullscreen</button>
+          </div>
+          <div class="carousel-controls">
+            <button class="carousel-nav" type="button" data-carousel-prev aria-label="Previous simulation video">‹</button>
+            <div class="carousel-caption">
+              <h3 data-carousel-title>Push-T</h3>
+              <p data-carousel-caption>SR: 50.0 → 98.3</p>
             </div>
-            <div class="card-body">
-              <h3>Push-T</h3>
-              <p>SR: 50.0 → 98.3</p>
-            </div>
-          </article>
-          <article class="video-card">
-            <div class="video-wrap">
-              <video class="rollout-video" autoplay muted loop playsinline preload="metadata" poster="assets/images/sim_push_wall_poster.png" src="assets/videos/sim_push_wall.mp4"></video>
-              <button class="fs" type="button" aria-label="Fullscreen Push-Wall video">fullscreen</button>
-            </div>
-            <div class="card-body">
-              <h3>Push-Wall</h3>
-              <p>SR: 37.0 → 80.7</p>
-            </div>
-          </article>
-          <article class="video-card">
-            <div class="video-wrap">
-              <video class="rollout-video" autoplay muted loop playsinline preload="metadata" poster="assets/images/sim_push_pillars_poster.png" src="assets/videos/sim_push_pillars.mp4"></video>
-              <button class="fs" type="button" aria-label="Fullscreen Push-Pillars video">fullscreen</button>
-            </div>
-            <div class="card-body">
-              <h3>Push-Pillars</h3>
-              <p>SR: 21.5 → 72.3</p>
-            </div>
-          </article>
-          <article class="video-card">
-            <div class="video-wrap">
-              <video class="rollout-video" autoplay muted loop playsinline preload="metadata" poster="assets/images/sim_quadruped_poster.png" src="assets/videos/sim_quadruped.mp4"></video>
-              <button class="fs" type="button" aria-label="Fullscreen Quadruped video">fullscreen</button>
-            </div>
-            <div class="card-body">
-              <h3>Quadruped</h3>
-              <p>SR: 50.0 → 84.3</p>
-            </div>
-          </article>
+            <button class="carousel-nav" type="button" data-carousel-next aria-label="Next simulation video">›</button>
+          </div>
+          <div class="carousel-dots" aria-label="Simulation video selector"></div>
         </div>
       </section>
 
@@ -551,47 +571,20 @@
           Across four real-robot tasks with a Franka Research 3 arm, MoRE shifts rollouts toward
           requested behavior modes while preserving task completion.
         </p>
-        <div class="rollout-grid" aria-label="Real robot rollout videos">
-          <article class="video-card">
-            <div class="video-wrap">
-              <video class="rollout-video" autoplay muted loop playsinline preload="metadata" poster="assets/images/knife_handover_poster.jpg" src="assets/videos/knife_handover.mp4"></video>
-              <button class="fs" type="button" aria-label="Fullscreen knife handover video">fullscreen</button>
+        <div class="carousel-shell" data-carousel="robots" aria-label="Real robot rollout carousel">
+          <div class="video-wrap">
+            <video class="carousel-video" autoplay muted playsinline preload="metadata" poster="assets/images/knife_handover_poster.jpg" src="assets/videos/knife_handover.mp4"></video>
+            <button class="fs" type="button" aria-label="Fullscreen real robot video">fullscreen</button>
+          </div>
+          <div class="carousel-controls">
+            <button class="carousel-nav" type="button" data-carousel-prev aria-label="Previous real robot video">‹</button>
+            <div class="carousel-caption">
+              <h3 data-carousel-title>Knife handover</h3>
+              <p data-carousel-caption>Shift handovers toward the desired orientation.</p>
             </div>
-            <div class="card-body">
-              <h3>Knife handover</h3>
-              <p>Shift handovers toward the desired orientation.</p>
-            </div>
-          </article>
-          <article class="video-card">
-            <div class="video-wrap">
-              <video class="rollout-video" autoplay muted loop playsinline preload="metadata" poster="assets/images/bottle_placement_poster.jpg" src="assets/videos/bottle_placement.mp4"></video>
-              <button class="fs" type="button" aria-label="Fullscreen bottle placement video">fullscreen</button>
-            </div>
-            <div class="card-body">
-              <h3>Bottle placement</h3>
-              <p>Select one or more acceptable placement modes.</p>
-            </div>
-          </article>
-          <article class="video-card">
-            <div class="video-wrap">
-              <video class="rollout-video" autoplay muted loop playsinline preload="metadata" poster="assets/images/block_obstacle_poster.jpg" src="assets/videos/block_obstacle.mp4"></video>
-              <button class="fs" type="button" aria-label="Fullscreen obstacle pick-and-place video">fullscreen</button>
-            </div>
-            <div class="card-body">
-              <h3>Obstacle pick-and-place</h3>
-              <p>Favor the requested route around obstacles.</p>
-            </div>
-          </article>
-          <article class="video-card">
-            <div class="video-wrap">
-              <video class="rollout-video" autoplay muted loop playsinline preload="metadata" poster="assets/images/knife_placement_poster.jpg" src="assets/videos/knife_placement.mp4"></video>
-              <button class="fs" type="button" aria-label="Fullscreen knife placement video">fullscreen</button>
-            </div>
-            <div class="card-body">
-              <h3>Knife placement</h3>
-              <p>Change mode choice while preserving the policy interface.</p>
-            </div>
-          </article>
+            <button class="carousel-nav" type="button" data-carousel-next aria-label="Next real robot video">›</button>
+          </div>
+          <div class="carousel-dots" aria-label="Real robot video selector"></div>
         </div>
         <div class="table-wrap">
           <table>
@@ -672,25 +665,127 @@
     </footer>
 
     <script>
-      const autoplayVideos = Array.from(document.querySelectorAll("video[autoplay]"));
-      const playAutoplayVideos = () => {
-        for (const video of autoplayVideos) {
-          video.play().catch(() => {});
-        }
+      const carouselData = {
+        simulation: [
+          {
+            title: "Push-T",
+            caption: "SR: 50.0 → 98.3",
+            src: "assets/videos/sim_pusht.mp4",
+            poster: "assets/images/sim_pusht_poster.png"
+          },
+          {
+            title: "Push-Wall",
+            caption: "SR: 37.0 → 80.7",
+            src: "assets/videos/sim_push_wall.mp4",
+            poster: "assets/images/sim_push_wall_poster.png"
+          },
+          {
+            title: "Push-Pillars",
+            caption: "SR: 21.5 → 72.3",
+            src: "assets/videos/sim_push_pillars.mp4",
+            poster: "assets/images/sim_push_pillars_poster.png"
+          },
+          {
+            title: "Quadruped",
+            caption: "SR: 50.0 → 84.3",
+            src: "assets/videos/sim_quadruped.mp4",
+            poster: "assets/images/sim_quadruped_poster.png"
+          }
+        ],
+        robots: [
+          {
+            title: "Knife handover",
+            caption: "Shift handovers toward the desired orientation.",
+            src: "assets/videos/knife_handover.mp4",
+            poster: "assets/images/knife_handover_poster.jpg"
+          },
+          {
+            title: "Bottle placement",
+            caption: "Select one or more acceptable placement modes.",
+            src: "assets/videos/bottle_placement.mp4",
+            poster: "assets/images/bottle_placement_poster.jpg"
+          },
+          {
+            title: "Obstacle pick-and-place",
+            caption: "Favor the requested route around obstacles.",
+            src: "assets/videos/block_obstacle.mp4",
+            poster: "assets/images/block_obstacle_poster.jpg"
+          },
+          {
+            title: "Knife placement",
+            caption: "Change mode choice while preserving the policy interface.",
+            src: "assets/videos/knife_placement.mp4",
+            poster: "assets/images/knife_placement_poster.jpg"
+          }
+        ]
       };
-      playAutoplayVideos();
-      document.addEventListener("visibilitychange", () => {
-        if (document.hidden) {
-          for (const video of autoplayVideos) video.pause();
-        } else {
-          playAutoplayVideos();
-        }
-      });
-      for (const video of autoplayVideos) {
+
+      const carousels = [];
+
+      for (const shell of document.querySelectorAll("[data-carousel]")) {
+        const name = shell.dataset.carousel;
+        const items = carouselData[name];
+        const video = shell.querySelector(".carousel-video");
+        const title = shell.querySelector("[data-carousel-title]");
+        const caption = shell.querySelector("[data-carousel-caption]");
+        const dots = shell.querySelector(".carousel-dots");
+        let index = 0;
+
+        const play = () => video.play().catch(() => {});
+        const show = (nextIndex) => {
+          index = (nextIndex + items.length) % items.length;
+          const item = items[index];
+          video.pause();
+          video.poster = item.poster;
+          video.src = item.src;
+          title.textContent = item.title;
+          caption.textContent = item.caption;
+          for (const [dotIndex, dot] of Array.from(dots.children).entries()) {
+            dot.setAttribute("aria-current", dotIndex === index ? "true" : "false");
+          }
+          video.load();
+          play();
+        };
+
+        items.forEach((item, dotIndex) => {
+          const dot = document.createElement("button");
+          dot.className = "carousel-dot";
+          dot.type = "button";
+          dot.textContent = item.title;
+          dot.setAttribute("aria-current", dotIndex === 0 ? "true" : "false");
+          dot.addEventListener("click", () => show(dotIndex));
+          dots.appendChild(dot);
+        });
+
+        shell.querySelector("[data-carousel-prev]").addEventListener("click", () => show(index - 1));
+        shell.querySelector("[data-carousel-next]").addEventListener("click", () => show(index + 1));
+        video.addEventListener("ended", () => show(index + 1));
         video.addEventListener("dblclick", () => {
           if (video.requestFullscreen) video.requestFullscreen();
         });
+        carousels.push({ video, play });
+        play();
       }
+
+      for (const video of document.querySelectorAll("video[autoplay]:not(.carousel-video)")) {
+        const play = () => video.play().catch(() => {});
+        video.addEventListener("dblclick", () => {
+          if (video.requestFullscreen) video.requestFullscreen();
+        });
+        carousels.push({ video, play });
+        play();
+      }
+
+      document.addEventListener("visibilitychange", () => {
+        for (const carousel of carousels) {
+          if (document.hidden) {
+            carousel.video.pause();
+          } else {
+            carousel.play();
+          }
+        }
+      });
+
       for (const button of document.querySelectorAll(".fs")) {
         button.addEventListener("click", () => {
           const video = button.parentElement.querySelector("video");
