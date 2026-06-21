@@ -432,7 +432,7 @@
         <div class="video-grid" aria-label="Featured robot rollouts">
           <article class="video-card">
             <div class="video-wrap">
-              <video muted loop playsinline preload="metadata" poster="assets/images/knife_handover_poster.jpg" src="assets/videos/knife_handover.mp4"></video>
+              <video class="featured-video" autoplay muted loop playsinline preload="metadata" poster="assets/images/knife_handover_poster.jpg" src="assets/videos/knife_handover.mp4"></video>
               <button class="fs" type="button" aria-label="Fullscreen video">fullscreen</button>
             </div>
             <div class="card-body">
@@ -442,7 +442,7 @@
           </article>
           <article class="video-card">
             <div class="video-wrap">
-              <video muted loop playsinline preload="metadata" poster="assets/images/bottle_placement_poster.jpg" src="assets/videos/bottle_placement.mp4"></video>
+              <video class="featured-video" autoplay muted loop playsinline preload="metadata" poster="assets/images/bottle_placement_poster.jpg" src="assets/videos/bottle_placement.mp4"></video>
               <button class="fs" type="button" aria-label="Fullscreen video">fullscreen</button>
             </div>
             <div class="card-body">
@@ -452,7 +452,7 @@
           </article>
           <article class="video-card">
             <div class="video-wrap">
-              <video muted loop playsinline preload="metadata" poster="assets/images/block_obstacle_poster.jpg" src="assets/videos/block_obstacle.mp4"></video>
+              <video class="featured-video" autoplay muted loop playsinline preload="metadata" poster="assets/images/block_obstacle_poster.jpg" src="assets/videos/block_obstacle.mp4"></video>
               <button class="fs" type="button" aria-label="Fullscreen video">fullscreen</button>
             </div>
             <div class="card-body">
@@ -462,7 +462,7 @@
           </article>
           <article class="video-card">
             <div class="video-wrap">
-              <video muted loop playsinline preload="metadata" poster="assets/images/knife_placement_poster.jpg" src="assets/videos/knife_placement.mp4"></video>
+              <video class="featured-video" autoplay muted loop playsinline preload="metadata" poster="assets/images/knife_placement_poster.jpg" src="assets/videos/knife_placement.mp4"></video>
               <button class="fs" type="button" aria-label="Fullscreen video">fullscreen</button>
             </div>
             <div class="card-body">
@@ -668,9 +668,21 @@
     </footer>
 
     <script>
-      for (const video of document.querySelectorAll("video[loop]")) {
-        video.addEventListener("mouseenter", () => video.play().catch(() => {}));
-        video.addEventListener("mouseleave", () => video.pause());
+      const featuredVideos = Array.from(document.querySelectorAll(".featured-video"));
+      const playFeaturedVideos = () => {
+        for (const video of featuredVideos) {
+          video.play().catch(() => {});
+        }
+      };
+      playFeaturedVideos();
+      document.addEventListener("visibilitychange", () => {
+        if (document.hidden) {
+          for (const video of featuredVideos) video.pause();
+        } else {
+          playFeaturedVideos();
+        }
+      });
+      for (const video of featuredVideos) {
         video.addEventListener("dblclick", () => {
           if (video.requestFullscreen) video.requestFullscreen();
         });
