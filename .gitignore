@@ -1,0 +1,14 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+*.egg-info/
+outputs/
+checkpoints/
+*.ckpt
+*.pt
+*.pth
+paper.pdf
+*_CoRL2026__Behavior_Uncloning*.pdf
