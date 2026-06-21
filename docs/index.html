@@ -1066,14 +1066,11 @@
                 <div class="quad-inline hidden" id="quadruped-replay">
                   <div class="quad-canvas-frame">
                     <canvas id="quad-canvas" aria-label="Animated quadruped rollout trajectory replay"></canvas>
-                    <div class="quad-loading" id="quad-loading">Loading recorded rollouts...</div>
+                    <div class="quad-loading" id="quad-loading">Loading trajectory replay...</div>
                   </div>
                   <div class="quad-inline-status" id="quad-status">Loading recorded rollout trajectories.</div>
-                  <div class="quad-inline-controls" aria-label="Quadruped replay controls">
-                    <div class="quad-route-grid" role="tablist" aria-label="Quadruped route selector">
-                      <button class="quad-route" type="button" aria-pressed="true" data-quad-mode="left">Left route</button>
-                      <button class="quad-route" type="button" aria-pressed="false" data-quad-mode="right">Right route</button>
-                    </div>
+                  <div class="quad-inline-controls" aria-label="Trajectory replay controls">
+                    <div class="quad-route-grid" id="replay-mode-tabs" role="tablist" aria-label="Trajectory mode selector"></div>
                     <select class="quad-select" id="quad-rollout-select" aria-label="Quadruped rollout seed"></select>
                     <select class="quad-select" id="quad-speed-select" aria-label="Quadruped replay speed">
                       <option value="0.5">0.5x</option>
@@ -1104,13 +1101,7 @@
                       <strong id="quad-goal">4.50, 0.00</strong>
                     </div>
                   </div>
-                  <div class="quad-legend" aria-label="Quadruped replay legend">
-                    <span><i class="quad-swatch left"></i>left rollouts</span>
-                    <span><i class="quad-swatch right"></i>right rollouts</span>
-                    <span><i class="quad-swatch current"></i>selected replay</span>
-                    <span><i class="quad-swatch pillar"></i>pillar</span>
-                    <span><i class="quad-swatch goal"></i>goal</span>
-                  </div>
+                  <div class="quad-legend" id="replay-legend" aria-label="Trajectory replay legend"></div>
                 </div>
                 <figcaption class="demo-media-caption">
                   <strong id="demo-traj-title">Trajectory summary</strong>
@@ -1120,9 +1111,9 @@
             </div>
             <div class="demo-bars" id="demo-bars" aria-label="Reported rollout outcome breakdown"></div>
             <p class="demo-note">
-              This is not a browser physics simulator. It is an interactive artifact viewer over the
-              released project media and the paper's SR/TCR definitions: SR is target-aligned task
-              success, while TCR counts task completion regardless of mode.
+              This is not a browser physics simulator. It replays task-specific trajectory traces:
+              recorded Go1 poses for Quadruped and local waypoint traces for the tabletop simulations.
+              SR is target-aligned task success, while TCR counts task completion regardless of mode.
             </p>
           </div>
         </div>
@@ -1367,21 +1358,16 @@
           video.load();
           video.play().catch(() => {});
         }
-        const isQuadruped = demoState.taskId === "quadruped";
         const trajImage = document.getElementById("demo-traj");
         const quadReplay = document.getElementById("quadruped-replay");
         trajImage.src = task.trajectory;
         trajImage.alt = `${task.label} trajectory summary`;
-        trajImage.classList.toggle("hidden", isQuadruped);
-        quadReplay.classList.toggle("hidden", !isQuadruped);
+        trajImage.classList.add("hidden");
+        quadReplay.classList.remove("hidden");
         document.getElementById("demo-video-caption").textContent = `Representative MoRE rollout for ${task.label}.`;
-        document.getElementById("demo-traj-title").textContent = isQuadruped ? "Interactive trajectory replay" : "Trajectory summary";
-        document.getElementById("demo-traj-caption").textContent = isQuadruped
-          ? "Recorded Go1 base-pose rollouts for the one-pillar navigation task."
-          : `Trajectory summary for ${task.label}; modes: ${task.modesText}.`;
-        if (isQuadruped) {
-          window.requestAnimationFrame(() => window.quadrupedReplay?.draw());
-        }
+        document.getElementById("demo-traj-title").textContent = "Interactive trajectory replay";
+        document.getElementById("demo-traj-caption").textContent = `${task.label} trajectory replay; modes: ${task.modesText}.`;
+        window.requestAnimationFrame(() => window.simTaskReplay?.showTask(demoState.taskId));
 
         document.getElementById("demo-bars").innerHTML =
           outcomeCard("Original mixed policy", task.originalSr, task.originalTcr, "Task-level average over target modes.") +
@@ -1410,7 +1396,7 @@
         renderDemo();
       }
 
-      const initQuadrupedReplay = () => {
+      const initSimTaskReplay = () => {
         const root = document.getElementById("quadruped-replay");
         if (!root) return;
 
@@ -1418,11 +1404,12 @@
         const ctx = canvas.getContext("2d");
         const loading = document.getElementById("quad-loading");
         const status = document.getElementById("quad-status");
+        const modeTabs = document.getElementById("replay-mode-tabs");
+        const legend = document.getElementById("replay-legend");
         const rolloutSelect = document.getElementById("quad-rollout-select");
         const speedSelect = document.getElementById("quad-speed-select");
         const playToggle = document.getElementById("quad-play-toggle");
         const resetButton = document.getElementById("quad-reset");
-        const routeButtons = Array.from(root.querySelectorAll("[data-quad-mode]"));
         const stepEl = document.getElementById("quad-step");
         const poseEl = document.getElementById("quad-pose");
         const yawEl = document.getElementById("quad-yaw");
@@ -1430,8 +1417,9 @@
         const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
         const state = {
-          data: null,
-          mode: "left",
+          tasks: {},
+          taskId: demoState.taskId,
+          modeId: null,
           rolloutIndex: 0,
           progress: 0,
           speed: Number(speedSelect.value),
@@ -1442,21 +1430,35 @@
         };
 
         const colors = {
-          left: "#236c9c",
-          right: "#b84d5a",
           current: "#0c7278",
           ink: "#17211d",
           muted: "#687772",
           rule: "#c9d8d2",
           goal: "#4aa86b",
-          pillar: "#6c5846"
+          pillar: "#6c5846",
+          wall: "#756757",
+          cube: "#2f6f8e",
+          pusher: "#ffd51d",
+          tBlock: "#a9a9a9"
+        };
+
+        const currentTask = () => state.tasks[state.taskId];
+        const currentMode = () => {
+          const task = currentTask();
+          if (!task) return null;
+          return task.modes.find((mode) => mode.id === state.modeId) || task.modes[0] || null;
+        };
+        const currentRollout = () => {
+          const mode = currentMode();
+          if (!mode) return null;
+          return mode.rollouts[state.rolloutIndex] || mode.rollouts[0] || null;
         };
 
         const resizeCanvas = () => {
           const rect = canvas.getBoundingClientRect();
           const dpr = Math.min(window.devicePixelRatio || 1, 2);
-          const width = Math.max(320, rect.width);
-          const height = Math.max(220, rect.height || width * 9 / 16);
+          const width = Math.max(280, rect.width);
+          const height = Math.max(150, rect.height || width * 9 / 16);
           state.cssWidth = width;
           state.cssHeight = height;
           const pixelWidth = Math.round(width * dpr);
@@ -1468,17 +1470,13 @@
           ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
         };
 
-        const selectedRollout = () => {
-          if (!state.data) return null;
-          const rollouts = state.data.rollouts[state.mode] || [];
-          return rollouts[state.rolloutIndex] || rollouts[0] || null;
-        };
-
         const layout = () => {
-          const scene = state.data.scene;
+          const scene = currentTask().scene;
           const [xMin, xMax] = scene.x_range;
           const [yMin, yMax] = scene.y_range;
-          const margin = { left: 58, right: 30, top: 30, bottom: 46 };
+          const margin = state.cssWidth < 380
+            ? { left: 40, right: 16, top: 24, bottom: 38 }
+            : { left: 58, right: 30, top: 30, bottom: 46 };
           const innerW = state.cssWidth - margin.left - margin.right;
           const innerH = state.cssHeight - margin.top - margin.bottom;
           const scale = Math.min(innerW / (xMax - xMin), innerH / (yMax - yMin));
@@ -1486,19 +1484,59 @@
           const plotH = (yMax - yMin) * scale;
           const originX = margin.left + (innerW - plotW) / 2 - xMin * scale;
           const originY = margin.top + (innerH - plotH) / 2 + yMax * scale;
-
           return {
-            xMin,
-            xMax,
-            yMin,
-            yMax,
-            scale,
+            xMin, xMax, yMin, yMax, scale,
             left: originX + xMin * scale,
             right: originX + xMax * scale,
             top: originY - yMax * scale,
             bottom: originY - yMin * scale,
             toScreen: ([x, y]) => [originX + x * scale, originY - y * scale]
           };
+        };
+
+        const formatTick = (value) => Math.abs(value) < 1e-6 ? "0" : value.toFixed(Math.abs(value) < 1 ? 2 : 1);
+
+        const drawGrid = () => {
+          const task = currentTask();
+          const view = layout();
+          const tick = task.scene.tick_step || 0.5;
+          ctx.fillStyle = "#edf5f2";
+          ctx.fillRect(0, 0, state.cssWidth, state.cssHeight);
+          ctx.strokeStyle = colors.rule;
+          ctx.lineWidth = 1;
+          ctx.font = state.cssWidth < 380 ? "10px Inter, sans-serif" : "12px Inter, sans-serif";
+          ctx.fillStyle = colors.muted;
+          ctx.textAlign = "center";
+          ctx.textBaseline = "top";
+
+          const xStart = Math.ceil(view.xMin / tick) * tick;
+          for (let x = xStart; x <= view.xMax + 1e-9; x += tick) {
+            const [sx] = view.toScreen([x, 0]);
+            ctx.beginPath();
+            ctx.moveTo(sx, view.top);
+            ctx.lineTo(sx, view.bottom);
+            ctx.stroke();
+            ctx.fillText(formatTick(x), sx, view.bottom + 8);
+          }
+
+          ctx.textAlign = "right";
+          ctx.textBaseline = "middle";
+          const yStart = Math.ceil(view.yMin / tick) * tick;
+          for (let y = yStart; y <= view.yMax + 1e-9; y += tick) {
+            const [, sy] = view.toScreen([0, y]);
+            ctx.beginPath();
+            ctx.moveTo(view.left, sy);
+            ctx.lineTo(view.right, sy);
+            ctx.stroke();
+            ctx.fillText(formatTick(y), view.left - 8, sy);
+          }
+
+          ctx.strokeStyle = "#9fb4ad";
+          ctx.lineWidth = 1.2;
+          ctx.strokeRect(view.left, view.top, view.right - view.left, view.bottom - view.top);
+          ctx.textAlign = "center";
+          ctx.textBaseline = "bottom";
+          ctx.fillText("x", (view.left + view.right) / 2, state.cssHeight - 10);
         };
 
         const drawPath = (points, color, lineWidth, alpha, maxIndex = points.length - 1) => {
@@ -1522,70 +1560,115 @@
           ctx.restore();
         };
 
-        const drawGrid = () => {
+        const screenPolygon = (points) => {
           const view = layout();
-          ctx.fillStyle = "#edf5f2";
-          ctx.fillRect(0, 0, state.cssWidth, state.cssHeight);
-          ctx.strokeStyle = colors.rule;
-          ctx.lineWidth = 1;
-          ctx.font = "12px Inter, sans-serif";
-          ctx.fillStyle = colors.muted;
-          ctx.textAlign = "center";
-          ctx.textBaseline = "top";
+          ctx.beginPath();
+          points.forEach((point, index) => {
+            const [x, y] = view.toScreen(point);
+            if (index === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+          });
+          ctx.closePath();
+        };
 
-          for (let x = 0.5; x <= 5.0; x += 0.5) {
-            const [sx] = view.toScreen([x, 0]);
-            ctx.beginPath();
-            ctx.moveTo(sx, view.top);
-            ctx.lineTo(sx, view.bottom);
+        const rotatePoint = ([x, y], angleDeg, [cx, cy]) => {
+          const angle = angleDeg * Math.PI / 180;
+          const dx = x - cx;
+          const dy = y - cy;
+          return [
+            cx + dx * Math.cos(angle) - dy * Math.sin(angle),
+            cy + dx * Math.sin(angle) + dy * Math.cos(angle)
+          ];
+        };
+
+        const rectPoints = (center, size, angleDeg = 0) => {
+          const [cx, cy] = center;
+          const [w, h] = size;
+          return [
+            [cx - w / 2, cy - h / 2],
+            [cx + w / 2, cy - h / 2],
+            [cx + w / 2, cy + h / 2],
+            [cx - w / 2, cy + h / 2]
+          ].map((point) => rotatePoint(point, angleDeg, center));
+        };
+
+        const drawT = (center, angleDeg, fill, stroke, alpha = 1, lineWidth = 1.4) => {
+          const stemCenter = rotatePoint([center[0], center[1] - 0.055], angleDeg, center);
+          const barCenter = rotatePoint([center[0], center[1] + 0.155], angleDeg, center);
+          const parts = [
+            [stemCenter, [0.115, 0.430]],
+            [barCenter, [0.455, 0.115]]
+          ];
+          ctx.save();
+          ctx.globalAlpha = alpha;
+          for (const [partCenter, size] of parts) {
+            screenPolygon(rectPoints(partCenter, size, angleDeg));
+            ctx.fillStyle = fill;
+            ctx.strokeStyle = stroke;
+            ctx.lineWidth = lineWidth;
+            ctx.fill();
             ctx.stroke();
-            ctx.fillText(x.toFixed(1), sx, view.bottom + 10);
           }
+          ctx.restore();
+        };
 
-          ctx.textAlign = "right";
-          ctx.textBaseline = "middle";
-          for (let y = -1.0; y <= 1.0; y += 0.5) {
-            const [, sy] = view.toScreen([0, y]);
-            ctx.beginPath();
-            ctx.moveTo(view.left, sy);
-            ctx.lineTo(view.right, sy);
-            ctx.stroke();
-            ctx.fillText(y.toFixed(1), view.left - 10, sy);
+        const drawCircle = (center, radius, fill, label = null, alpha = 1) => {
+          const view = layout();
+          const [x, y] = view.toScreen(center);
+          ctx.save();
+          ctx.globalAlpha = alpha;
+          ctx.fillStyle = fill;
+          ctx.beginPath();
+          ctx.arc(x, y, Math.max(4, radius * view.scale), 0, Math.PI * 2);
+          ctx.fill();
+          if (label && state.cssWidth >= 340) {
+            ctx.globalAlpha = 1;
+            ctx.font = "12px Inter, sans-serif";
+            ctx.fillStyle = colors.ink;
+            ctx.textAlign = "center";
+            ctx.textBaseline = "bottom";
+            ctx.fillText(label, x, y - Math.max(4, radius * view.scale) - 7);
           }
-
-          ctx.strokeStyle = "#9fb4ad";
-          ctx.lineWidth = 1.2;
-          ctx.strokeRect(view.left, view.top, view.right - view.left, view.bottom - view.top);
-          ctx.textAlign = "center";
-          ctx.fillText("x [m]", (view.left + view.right) / 2, state.cssHeight - 20);
+          ctx.restore();
         };
 
         const drawSceneObjects = (rollout) => {
+          const task = currentTask();
+          const scene = task.scene;
           const view = layout();
+          if (scene.kind === "pusht") {
+            drawT(scene.goal_t.center, scene.goal_t.angle_deg, "rgba(255,255,255,0)", colors.goal, 1, 2.2);
+            drawT(scene.block_t.center, scene.block_t.angle_deg, colors.tBlock, colors.ink, 0.86, 1.5);
+            return;
+          }
+          if (scene.kind === "pushwall") {
+            const wall = scene.wall;
+            screenPolygon(rectPoints(wall.center, wall.size));
+            ctx.fillStyle = colors.wall;
+            ctx.fill();
+            drawCircle(scene.goal.center, scene.goal.radius, colors.goal, "goal", 0.58);
+            return;
+          }
+          if (scene.kind === "pushpillars") {
+            for (const pillar of scene.pillars) {
+              drawCircle(pillar, scene.pillar_radius, colors.pillar, null, 0.92);
+            }
+            const [fx] = view.toScreen([scene.finish_x, 0]);
+            ctx.save();
+            ctx.strokeStyle = colors.goal;
+            ctx.lineWidth = 3;
+            ctx.globalAlpha = 0.65;
+            ctx.beginPath();
+            ctx.moveTo(fx, view.top);
+            ctx.lineTo(fx, view.bottom);
+            ctx.stroke();
+            ctx.restore();
+            return;
+          }
           const pillar = rollout.pillar_xy || [2.5, 0.0];
           const goal = rollout.goal_xy || [4.5, 0.0];
-          const [px, py] = view.toScreen(pillar);
-          const [gx, gy] = view.toScreen(goal);
-
-          ctx.save();
-          ctx.fillStyle = colors.pillar;
-          ctx.globalAlpha = 0.9;
-          ctx.beginPath();
-          ctx.arc(px, py, state.data.scene.pillar_radius * view.scale, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.fillStyle = colors.goal;
-          ctx.globalAlpha = 0.55;
-          ctx.beginPath();
-          ctx.arc(gx, gy, state.data.scene.goal_radius * view.scale, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.globalAlpha = 1;
-          ctx.font = "12px Inter, sans-serif";
-          ctx.fillStyle = colors.ink;
-          ctx.textAlign = "center";
-          ctx.textBaseline = "bottom";
-          ctx.fillText("pillar", px, py - state.data.scene.pillar_radius * view.scale - 8);
-          ctx.fillText("goal", gx, gy - state.data.scene.goal_radius * view.scale - 8);
-          ctx.restore();
+          drawCircle(pillar, scene.pillar_radius, colors.pillar, "pillar", 0.9);
+          drawCircle(goal, scene.goal_radius, colors.goal, "goal", 0.55);
         };
 
         const interpolatePose = (rollout) => {
@@ -1605,14 +1688,13 @@
           ];
         };
 
-        const drawRobot = (pose) => {
+        const drawDog = (pose) => {
           const view = layout();
           const [x, y, yaw, step] = pose;
           const [sx, sy] = view.toScreen([x, y]);
           const bodyL = 34;
           const bodyW = 18;
           const phase = Math.sin(step * 0.34) * 3;
-
           ctx.save();
           ctx.translate(sx, sy);
           ctx.rotate(-yaw);
@@ -1647,48 +1729,115 @@
           ctx.restore();
         };
 
-        const updateReadout = (rollout, pose) => {
+        const drawCube = (pose) => {
+          const task = currentTask();
+          const scene = task.scene;
+          const view = layout();
+          const [x, y, yaw] = pose;
+          const size = scene.cube_size || 0.026;
+          const points = rectPoints([x, y], [size, size], yaw * 180 / Math.PI);
+          ctx.save();
+          screenPolygon(points);
+          ctx.fillStyle = colors.cube;
+          ctx.strokeStyle = colors.ink;
+          ctx.lineWidth = 1.2;
+          ctx.fill();
+          ctx.stroke();
+          ctx.restore();
+        };
+
+        const drawPusher = (pose) => {
+          const scene = currentTask().scene;
+          drawCircle([pose[0], pose[1]], scene.pusher_radius || 0.035, colors.pusher, null, 1);
+        };
+
+        const drawActor = (pose) => {
+          const kind = currentTask().scene.kind;
+          if (kind === "quadruped") drawDog(pose);
+          else if (kind === "pusht") drawPusher(pose);
+          else drawCube(pose);
+        };
+
+        const updateReadout = (task, mode, rollout, pose) => {
           const [x, y, yaw, step] = pose;
-          const goal = rollout.goal_xy || [4.5, 0.0];
+          const goal = rollout.goal_xy || task.scene.goal?.center || task.scene.goal_t?.center || [task.scene.finish_x || 0, 0];
           stepEl.textContent = `${step + 1} / ${rollout.points.length}`;
           poseEl.textContent = `${x.toFixed(2)}, ${y.toFixed(2)}`;
           yawEl.textContent = `${yaw.toFixed(2)} rad`;
           goalEl.textContent = `${goal[0].toFixed(2)}, ${goal[1].toFixed(2)}`;
-          status.textContent = `${state.mode === "left" ? "Left" : "Right"} route · seed ${rollout.seed} · ${rollout.points.length} recorded poses`;
+          status.textContent = `${task.label} · ${mode.label} · seed ${rollout.seed} · ${rollout.points.length} poses`;
         };
 
         const draw = () => {
-          if (!state.data) return;
+          const task = currentTask();
+          const mode = currentMode();
+          const rollout = currentRollout();
+          if (!task || !mode || !rollout) return;
           resizeCanvas();
-          const rollout = selectedRollout();
-          if (!rollout) return;
-
           drawGrid();
-          for (const [mode, traces] of Object.entries(state.data.rollouts)) {
-            for (const trace of traces) {
-              drawPath(trace.points, colors[mode], 1.2, mode === state.mode ? 0.22 : 0.10);
+          for (const candidate of task.modes) {
+            for (const trace of candidate.rollouts) {
+              drawPath(trace.points, candidate.color, 1.2, candidate.id === mode.id ? 0.24 : 0.10);
             }
           }
           drawSceneObjects(rollout);
           drawPath(rollout.points, colors.current, 2.6, 0.42);
           drawPath(rollout.points, colors.current, 4.4, 0.95, Math.floor(state.progress));
           const pose = interpolatePose(rollout);
-          drawRobot(pose);
-          updateReadout(rollout, pose);
+          drawActor(pose);
+          updateReadout(task, mode, rollout, pose);
         };
 
         const syncControls = () => {
-          for (const button of routeButtons) {
-            button.setAttribute("aria-pressed", button.dataset.quadMode === state.mode ? "true" : "false");
+          for (const button of modeTabs.querySelectorAll("[data-replay-mode]")) {
+            button.setAttribute("aria-pressed", button.dataset.replayMode === state.modeId ? "true" : "false");
           }
           playToggle.textContent = state.playing ? "Pause" : "Play";
           playToggle.classList.toggle("primary", state.playing);
         };
 
+        const populateModeTabs = () => {
+          const task = currentTask();
+          if (!task) return;
+          modeTabs.innerHTML = task.modes.map((mode) =>
+            `<button class="quad-route" type="button" aria-pressed="${mode.id === state.modeId ? "true" : "false"}" data-replay-mode="${mode.id}">${mode.label}</button>`
+          ).join("");
+          for (const button of modeTabs.querySelectorAll("[data-replay-mode]")) {
+            button.addEventListener("click", () => {
+              state.modeId = button.dataset.replayMode;
+              state.rolloutIndex = 0;
+              resetReplay();
+              populateRolloutSelect();
+              syncControls();
+            });
+          }
+        };
+
+        const populateLegend = () => {
+          const task = currentTask();
+          if (!task) return;
+          const sceneItems = {
+            pusht: [["#ffd51d", "pusher"], [colors.goal, "target pose"]],
+            pushwall: [[colors.wall, "wall"], [colors.goal, "goal"]],
+            pushpillars: [[colors.pillar, "pillars"], [colors.goal, "finish line"]],
+            quadruped: [[colors.pillar, "pillar"], [colors.goal, "goal"]]
+          }[task.scene.kind] || [];
+          legend.innerHTML = [
+            ...task.modes.map((mode) =>
+              `<span><i class="quad-swatch" style="background:${mode.color}"></i>${mode.label}</span>`
+            ),
+            `<span><i class="quad-swatch current"></i>selected replay</span>`,
+            ...sceneItems.map(([color, label]) =>
+              `<span><i class="quad-swatch" style="width:10px;height:10px;background:${color}"></i>${label}</span>`
+            )
+          ].join("");
+        };
+
         const populateRolloutSelect = () => {
-          const rollouts = state.data.rollouts[state.mode] || [];
-          state.rolloutIndex = Math.min(state.rolloutIndex, Math.max(0, rollouts.length - 1));
-          rolloutSelect.innerHTML = rollouts.map((rollout, index) =>
+          const mode = currentMode();
+          if (!mode) return;
+          state.rolloutIndex = Math.min(state.rolloutIndex, Math.max(0, mode.rollouts.length - 1));
+          rolloutSelect.innerHTML = mode.rollouts.map((rollout, index) =>
             `<option value="${index}">seed ${rollout.seed} · ${rollout.points.length} poses</option>`
           ).join("");
           rolloutSelect.value = String(state.rolloutIndex);
@@ -1700,34 +1849,36 @@
           draw();
         };
 
-        window.quadrupedReplay = { draw, reset: resetReplay };
+        const showTask = (taskId) => {
+          if (!state.tasks[taskId]) return;
+          state.taskId = taskId;
+          const task = currentTask();
+          if (!task.modes.some((mode) => mode.id === state.modeId)) {
+            state.modeId = task.modes[0].id;
+          }
+          state.rolloutIndex = 0;
+          populateModeTabs();
+          populateLegend();
+          populateRolloutSelect();
+          syncControls();
+          resetReplay();
+        };
 
         const animate = (ts) => {
-          const rollout = selectedRollout();
-          if (rollout) {
+          const rollout = currentRollout();
+          const task = currentTask();
+          if (rollout && task) {
             if (state.lastTs === null) state.lastTs = ts;
             const dt = Math.min(0.05, (ts - state.lastTs) / 1000);
             state.lastTs = ts;
             if (state.playing) {
-              state.progress += dt * state.data.sample_rate_hz * state.speed;
-              if (state.progress >= rollout.points.length - 1) {
-                state.progress = 0;
-              }
+              state.progress += dt * task.sample_rate_hz * state.speed;
+              if (state.progress >= rollout.points.length - 1) state.progress = 0;
             }
             draw();
           }
           window.requestAnimationFrame(animate);
         };
-
-        for (const button of routeButtons) {
-          button.addEventListener("click", () => {
-            state.mode = button.dataset.quadMode;
-            state.rolloutIndex = 0;
-            populateRolloutSelect();
-            resetReplay();
-            syncControls();
-          });
-        }
 
         rolloutSelect.addEventListener("change", () => {
           state.rolloutIndex = Number(rolloutSelect.value);
@@ -1749,26 +1900,28 @@
         });
         window.addEventListener("resize", draw);
 
-        fetch("assets/data/quadruped_rollouts.json")
+        window.simTaskReplay = { showTask, draw, reset: resetReplay };
+
+        fetch("assets/data/sim_task_replays.json")
           .then((response) => {
             if (!response.ok) throw new Error(`HTTP ${response.status}`);
             return response.json();
           })
           .then((data) => {
-            state.data = data;
+            state.tasks = data.tasks;
             loading.classList.add("hidden");
-            populateRolloutSelect();
-            syncControls();
-            draw();
+            showTask(demoState.taskId);
             window.requestAnimationFrame(animate);
           })
           .catch(() => {
-            loading.textContent = "Could not load recorded rollout data.";
-            status.textContent = "Recorded rollout data could not be loaded.";
+            loading.textContent = "Could not load trajectory replay data.";
+            status.textContent = "Trajectory replay data could not be loaded.";
+            document.getElementById("demo-traj").classList.remove("hidden");
+            root.classList.add("hidden");
           });
       };
 
-      initQuadrupedReplay();
+      initSimTaskReplay();
 
       const carouselData = {
         robots: [
