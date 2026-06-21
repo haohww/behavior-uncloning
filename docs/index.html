@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Behavior Uncloning</title>
     <meta name="description" content="Behavior Uncloning: distilling mode redirection into policy weights without inference-time steering.">
+    <meta property="og:title" content="Behavior Uncloning">
+    <meta property="og:description" content="Distilling mode redirection into policy weights without inference-time steering.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://behavior-uncloning.github.io/">
+    <meta property="og:image" content="https://behavior-uncloning.github.io/assets/images/sim_push_wall_poster.png">
+    <meta name="twitter:card" content="summary_large_image">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -394,6 +400,7 @@
       .table-wrap {
         margin-top: 26px;
         overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
         border: 1px solid var(--rule);
         border-radius: 8px;
         background: var(--card);
@@ -416,6 +423,18 @@
         letter-spacing: 0.08em;
         text-transform: uppercase;
         color: var(--muted);
+        background: #edf5f2;
+      }
+      th:first-child,
+      td:first-child {
+        position: sticky;
+        left: 0;
+        z-index: 1;
+        background: var(--card);
+        border-right: 1px solid var(--rule);
+      }
+      th:first-child {
+        z-index: 2;
         background: #edf5f2;
       }
       tr:last-child td { border-bottom: 0; }
@@ -606,14 +625,14 @@
             <button class="carousel-nav" type="button" data-carousel-prev aria-label="Previous simulation video">‹</button>
             <div class="carousel-caption">
               <h3 data-carousel-title>Push-T</h3>
-              <p data-carousel-caption>SR: 50.0 → 98.3</p>
+              <p data-carousel-caption>SR: 50.0 → 98.3 (+48.3)</p>
             </div>
             <button class="carousel-nav" type="button" data-carousel-next aria-label="Next simulation video">›</button>
           </div>
           <div class="carousel-dots" aria-label="Simulation video selector"></div>
         </div>
         <div class="table-wrap">
-          <table>
+          <table aria-label="Simulated task deployment success improvements">
             <thead>
               <tr>
                 <th>Task</th>
@@ -679,14 +698,14 @@
             <button class="carousel-nav" type="button" data-carousel-prev aria-label="Previous real robot video">‹</button>
             <div class="carousel-caption">
               <h3 data-carousel-title>Knife handover</h3>
-              <p data-carousel-caption>Shift handovers toward the desired orientation.</p>
+              <p data-carousel-caption>SR: 45.0 → 70.0 (+25.0).</p>
             </div>
             <button class="carousel-nav" type="button" data-carousel-next aria-label="Next real robot video">›</button>
           </div>
           <div class="carousel-dots" aria-label="Real robot video selector"></div>
         </div>
         <div class="table-wrap">
-          <table>
+          <table aria-label="Real-robot task deployment success improvements">
             <thead>
               <tr>
                 <th>Task</th>
