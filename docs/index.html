@@ -428,6 +428,15 @@
         color: var(--ink);
         white-space: nowrap;
       }
+      .delta {
+        color: var(--accent);
+        font-weight: 700;
+      }
+      .table-note {
+        margin: 10px 0 0;
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
 
       .wide-video {
         max-width: 980px;
@@ -603,6 +612,55 @@
           </div>
           <div class="carousel-dots" aria-label="Simulation video selector"></div>
         </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Task</th>
+                <th>Modes</th>
+                <th>Original SR</th>
+                <th>MoRE SR</th>
+                <th>SR Gain</th>
+                <th>MoRE TCR</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Push-T</td>
+                <td>left or right</td>
+                <td class="metric">50.0%</td>
+                <td class="metric">98.3%</td>
+                <td class="metric delta">+48.3</td>
+                <td class="metric">98.7%</td>
+              </tr>
+              <tr>
+                <td>Push-Wall</td>
+                <td>left or right</td>
+                <td class="metric">37.0%</td>
+                <td class="metric">80.7%</td>
+                <td class="metric delta">+43.7</td>
+                <td class="metric">80.7%</td>
+              </tr>
+              <tr>
+                <td>Push-Pillars</td>
+                <td>four routes</td>
+                <td class="metric">21.5%</td>
+                <td class="metric">72.3%</td>
+                <td class="metric delta">+50.8</td>
+                <td class="metric">80.7%</td>
+              </tr>
+              <tr>
+                <td>Quadruped</td>
+                <td>left or right</td>
+                <td class="metric">50.0%</td>
+                <td class="metric">84.3%</td>
+                <td class="metric delta">+34.3</td>
+                <td class="metric">84.7%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="table-note">Values report average deployment success rate (SR) and task completion rate (TCR) over target modes.</p>
       </section>
 
       <section id="robots" class="section left">
@@ -633,38 +691,49 @@
               <tr>
                 <th>Task</th>
                 <th>Mode change</th>
-                <th>Original SR / TCR</th>
-                <th>MoRE SR / TCR</th>
+                <th>Original SR</th>
+                <th>MoRE SR</th>
+                <th>SR Gain</th>
+                <th>MoRE TCR</th>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <td>Place-Knife</td>
                 <td>2 → 1</td>
-                <td class="metric">40.0 / 80.0</td>
-                <td class="metric">80.0 / 80.0</td>
+                <td class="metric">40.0%</td>
+                <td class="metric">80.0%</td>
+                <td class="metric delta">+40.0</td>
+                <td class="metric">80.0%</td>
               </tr>
-              <tr class="ours">
+              <tr>
                 <td>Place-Bottle</td>
                 <td>3 → 1</td>
-                <td class="metric">31.7 / 95.0</td>
-                <td class="metric">96.7 / 96.7</td>
+                <td class="metric">31.7%</td>
+                <td class="metric">96.7%</td>
+                <td class="metric delta">+65.0</td>
+                <td class="metric">96.7%</td>
               </tr>
               <tr>
                 <td>Block-Obstacle</td>
                 <td>2 → 1</td>
-                <td class="metric">47.5 / 95.0</td>
-                <td class="metric">92.5 / 92.5</td>
+                <td class="metric">47.5%</td>
+                <td class="metric">92.5%</td>
+                <td class="metric delta">+45.0</td>
+                <td class="metric">92.5%</td>
               </tr>
               <tr>
                 <td>Knife-Handover (VLA)</td>
                 <td>2 → 1</td>
-                <td class="metric">45.0 / 90.0</td>
-                <td class="metric">70.0 / 85.0</td>
+                <td class="metric">45.0%</td>
+                <td class="metric">70.0%</td>
+                <td class="metric delta">+25.0</td>
+                <td class="metric">85.0%</td>
               </tr>
             </tbody>
           </table>
         </div>
+        <p class="table-note">Values report average real-robot SR over target modes. Place-Bottle also supports a 3 → 2 edit, improving SR from 50.0% to 100.0%.</p>
       </section>
 
       <section id="supplementary" class="section narrow">
@@ -691,25 +760,25 @@
         simulation: [
           {
             title: "Push-T",
-            caption: "SR: 50.0 → 98.3",
+            caption: "SR: 50.0 → 98.3 (+48.3)",
             src: "assets/videos/sim_pusht.mp4",
             poster: "assets/images/sim_pusht_poster.png"
           },
           {
             title: "Push-Wall",
-            caption: "SR: 37.0 → 80.7",
+            caption: "SR: 37.0 → 80.7 (+43.7)",
             src: "assets/videos/sim_push_wall.mp4",
             poster: "assets/images/sim_push_wall_poster.png"
           },
           {
             title: "Push-Pillars",
-            caption: "SR: 21.5 → 72.3",
+            caption: "SR: 21.5 → 72.3 (+50.8)",
             src: "assets/videos/sim_push_pillars.mp4",
             poster: "assets/images/sim_push_pillars_poster.png"
           },
           {
             title: "Quadruped",
-            caption: "SR: 50.0 → 84.3",
+            caption: "SR: 50.0 → 84.3 (+34.3)",
             src: "assets/videos/sim_quadruped.mp4",
             poster: "assets/images/sim_quadruped_poster.png"
           }
@@ -717,25 +786,25 @@
         robots: [
           {
             title: "Knife handover",
-            caption: "Shift handovers toward the desired orientation.",
+            caption: "SR: 45.0 → 70.0 (+25.0).",
             src: "assets/videos/knife_handover.mp4",
             poster: "assets/images/knife_handover_poster.jpg"
           },
           {
             title: "Bottle placement",
-            caption: "Select one or more acceptable placement modes.",
+            caption: "SR: 31.7 → 96.7 (+65.0).",
             src: "assets/videos/bottle_placement.mp4",
             poster: "assets/images/bottle_placement_poster.jpg"
           },
           {
             title: "Obstacle pick-and-place",
-            caption: "Favor the requested route around obstacles.",
+            caption: "SR: 47.5 → 92.5 (+45.0).",
             src: "assets/videos/block_obstacle.mp4",
             poster: "assets/images/block_obstacle_poster.jpg"
           },
           {
             title: "Knife placement",
-            caption: "Change mode choice while preserving the policy interface.",
+            caption: "SR: 40.0 → 80.0 (+40.0).",
             src: "assets/videos/knife_placement.mp4",
             poster: "assets/images/knife_placement_poster.jpg"
           }
