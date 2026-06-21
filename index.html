@@ -4,104 +4,683 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Behavior Uncloning</title>
+    <meta name="description" content="Behavior Uncloning: distilling mode redirection into policy weights without inference-time steering.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Castoro:ital@0;1&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
       :root {
-        color-scheme: light;
-        --bg: #f7f7f5;
-        --text: #1f2933;
-        --muted: #5c6670;
-        --line: #d8ddd8;
-        --accent: #245b4f;
+        --ink: #1a1815;
+        --ink-soft: #4a4039;
+        --muted: #7a6e62;
+        --rule: #e2d9c2;
+        --bg: #fbf6ea;
+        --card: #fffefb;
+        --tint: #f4ecd8;
+        --accent: #2f6b4f;
+        --accent-soft: #dcebdc;
+        --warning: #8a4a2d;
+        --serif: "Castoro", "Noto Serif", Iowan Old Style, Georgia, serif;
+        --sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+        --max: 1440px;
+        --narrow: 850px;
       }
+
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
       body {
         margin: 0;
-        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         background: var(--bg);
-        color: var(--text);
-        line-height: 1.6;
+        color: var(--ink);
+        font-family: var(--sans);
+        font-size: 16px;
+        line-height: 1.58;
+        -webkit-font-smoothing: antialiased;
       }
-      main {
-        max-width: 880px;
+      a { color: var(--accent); text-decoration: none; }
+      a:hover { text-decoration: underline; text-underline-offset: 3px; }
+      img, video { display: block; max-width: 100%; }
+
+      .nav {
+        position: sticky;
+        top: 0;
+        z-index: 20;
+        background: rgba(251, 246, 234, 0.86);
+        border-bottom: 1px solid var(--rule);
+        backdrop-filter: blur(14px) saturate(140%);
+      }
+      .nav-inner {
+        max-width: var(--max);
         margin: 0 auto;
-        padding: 72px 24px 56px;
+        padding: 13px 24px;
+        display: flex;
+        align-items: center;
+        gap: 22px;
       }
-      h1 {
-        margin: 0 0 16px;
-        font-size: clamp(2rem, 6vw, 4.25rem);
-        line-height: 1.05;
-        letter-spacing: 0;
+      .brand {
+        font-family: var(--serif);
+        font-size: 1.15rem;
+        color: var(--ink);
+        white-space: nowrap;
       }
-      h2 {
-        margin-top: 40px;
-        font-size: 1.25rem;
-      }
-      p {
-        max-width: 760px;
-      }
-      .subtitle {
-        font-size: 1.25rem;
-        color: var(--muted);
-      }
-      .links {
+      .nav-links {
+        margin-left: auto;
         display: flex;
         flex-wrap: wrap;
-        gap: 12px;
-        margin: 28px 0 36px;
+        justify-content: flex-end;
+        gap: 18px;
       }
-      a.button {
-        display: inline-block;
-        padding: 10px 14px;
-        border: 1px solid var(--accent);
-        border-radius: 6px;
-        color: var(--accent);
-        text-decoration: none;
-        font-weight: 600;
+      .nav-links a {
+        color: var(--ink-soft);
+        font-size: 0.92rem;
       }
-      .notice {
-        border-top: 1px solid var(--line);
-        border-bottom: 1px solid var(--line);
-        padding: 16px 0;
+      .nav-links a:hover { color: var(--accent); text-decoration: none; }
+
+      .hero {
+        max-width: var(--max);
+        margin: 0 auto;
+        padding: 68px 24px 34px;
+        text-align: center;
+      }
+      .eyebrow {
+        margin-bottom: 18px;
+        font-family: var(--mono);
+        font-size: 0.78rem;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
         color: var(--muted);
       }
-      .abstract {
-        font-size: 1.05rem;
+      h1 {
+        max-width: 13ch;
+        margin: 0 auto 18px;
+        font-family: var(--serif);
+        font-size: clamp(2.9rem, 8vw, 6.2rem);
+        font-weight: 400;
+        line-height: 0.98;
+        letter-spacing: 0;
       }
-      code {
-        background: #ecefeb;
-        padding: 2px 5px;
-        border-radius: 4px;
+      .subtitle {
+        max-width: 760px;
+        margin: 0 auto 26px;
+        font-family: var(--serif);
+        color: var(--ink-soft);
+        font-size: clamp(1.12rem, 2.4vw, 1.45rem);
+        line-height: 1.42;
+      }
+      .hero-note {
+        max-width: 780px;
+        margin: 0 auto 28px;
+        color: var(--muted);
+      }
+      .cta {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 36px;
+      }
+      .button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 44px;
+        padding: 10px 20px;
+        border-radius: 999px;
+        border: 1px solid var(--ink);
+        background: var(--ink);
+        color: var(--bg);
+        font-weight: 600;
+      }
+      .button:hover {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: white;
+        text-decoration: none;
+      }
+      .button.secondary {
+        background: transparent;
+        color: var(--ink-soft);
+        border-color: var(--rule);
+      }
+      .button.secondary:hover {
+        background: var(--tint);
+        color: var(--ink);
+        border-color: var(--ink-soft);
+      }
+
+      .section {
+        max-width: var(--max);
+        margin: 0 auto;
+        padding: 54px 24px;
+      }
+      .section.narrow { max-width: calc(var(--narrow) + 48px); }
+      .section-kicker {
+        font-family: var(--mono);
+        font-size: 0.78rem;
+        letter-spacing: 0.14em;
+        color: var(--accent);
+        text-transform: uppercase;
+        font-weight: 600;
+        margin-bottom: 10px;
+      }
+      h2 {
+        margin: 0 0 16px;
+        font-family: var(--serif);
+        font-weight: 400;
+        font-size: clamp(1.8rem, 4vw, 3rem);
+        line-height: 1.12;
+      }
+      .lead {
+        max-width: var(--narrow);
+        margin: 0 auto 26px;
+        color: var(--ink-soft);
+        font-size: 1.06rem;
+      }
+      .left .lead { margin-left: 0; }
+
+      .video-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 14px;
+        text-align: left;
+      }
+      .video-card,
+      .image-card,
+      .stat-card,
+      .method-card {
+        border: 1px solid var(--rule);
+        border-radius: 8px;
+        background: var(--card);
+        overflow: hidden;
+      }
+      .video-wrap {
+        position: relative;
+        background: #e9e1ce;
+      }
+      video {
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        object-fit: cover;
+        background: #e9e1ce;
+      }
+      .video-card h3,
+      .image-card h3,
+      .stat-card h3,
+      .method-card h3 {
+        margin: 0;
+        font-size: 1rem;
+        line-height: 1.3;
+      }
+      .card-body { padding: 13px 14px 15px; }
+      .card-body p {
+        margin: 7px 0 0;
+        color: var(--muted);
+        font-size: 0.92rem;
+      }
+      .fs {
+        position: absolute;
+        right: 8px;
+        bottom: 8px;
+        border: 0;
+        border-radius: 999px;
+        padding: 6px 8px;
+        background: rgba(26, 24, 21, 0.72);
+        color: white;
+        font-family: var(--mono);
+        font-size: 0.75rem;
+        cursor: pointer;
+      }
+
+      .abstract {
+        max-width: var(--narrow);
+        margin: 0 auto;
+        font-size: 1.05rem;
+        color: var(--ink-soft);
+      }
+      .abstract p { margin: 0 0 16px; }
+      .highlights {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 14px;
+        margin-top: 28px;
+      }
+      .stat-card { padding: 18px; }
+      .stat {
+        font-family: var(--serif);
+        font-size: 2rem;
+        line-height: 1;
+        color: var(--accent);
+      }
+      .stat-card p {
+        margin: 8px 0 0;
+        color: var(--muted);
+        font-size: 0.92rem;
+      }
+
+      .method-flow {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr auto 1fr;
+        align-items: stretch;
+        gap: 13px;
+        margin-top: 26px;
+      }
+      .method-card { padding: 18px; }
+      .method-card .num {
+        display: inline-flex;
+        width: 28px;
+        height: 28px;
+        align-items: center;
+        justify-content: center;
+        border-radius: 999px;
+        background: var(--accent-soft);
+        color: var(--accent);
+        font-family: var(--mono);
+        font-weight: 600;
+        margin-bottom: 14px;
+      }
+      .method-card p {
+        margin: 8px 0 0;
+        color: var(--muted);
+        font-size: 0.94rem;
+      }
+      .arrow {
+        align-self: center;
+        color: var(--accent);
+        font-family: var(--serif);
+        font-size: 2rem;
+      }
+      .equation {
+        margin-top: 18px;
+        padding: 18px 20px;
+        border: 1px solid var(--rule);
+        border-radius: 8px;
+        background: var(--tint);
+        font-family: var(--mono);
+        color: var(--ink-soft);
+        overflow-x: auto;
+        white-space: nowrap;
+      }
+
+      .task-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 14px;
+        margin-top: 26px;
+      }
+      .image-card img {
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        object-fit: cover;
+        background: #e9e1ce;
+      }
+
+      .table-wrap {
+        overflow-x: auto;
+        border: 1px solid var(--rule);
+        border-radius: 8px;
+        background: var(--card);
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 760px;
+      }
+      th, td {
+        padding: 12px 13px;
+        border-bottom: 1px solid var(--rule);
+        text-align: left;
+        vertical-align: top;
+        font-size: 0.93rem;
+      }
+      th {
+        font-family: var(--mono);
+        font-size: 0.75rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--muted);
+        background: #f8f0dd;
+      }
+      tr:last-child td { border-bottom: 0; }
+      .ours td {
+        background: #edf5e9;
+        font-weight: 600;
+      }
+      .metric {
+        font-family: var(--mono);
+        color: var(--ink);
+        white-space: nowrap;
+      }
+
+      .wide-video {
+        max-width: 980px;
+        margin: 24px auto 0;
+        border: 1px solid var(--rule);
+        border-radius: 8px;
+        overflow: hidden;
+        background: var(--card);
+      }
+      .wide-video video { aspect-ratio: 16 / 9; object-fit: contain; }
+
+      .citation {
+        max-width: var(--narrow);
+        margin: 20px auto 0;
+        padding: 18px;
+        border-radius: 8px;
+        border: 1px solid var(--rule);
+        background: var(--card);
+        color: var(--muted);
+        font-family: var(--mono);
+        font-size: 0.88rem;
+        overflow-x: auto;
+      }
+      footer {
+        border-top: 1px solid var(--rule);
+        padding: 28px 24px 42px;
+        color: var(--muted);
+        text-align: center;
+        font-size: 0.9rem;
+      }
+
+      @media (max-width: 980px) {
+        .video-grid,
+        .highlights,
+        .task-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .method-flow { grid-template-columns: 1fr; }
+        .arrow { display: none; }
+      }
+      @media (max-width: 660px) {
+        .nav-inner { align-items: flex-start; flex-direction: column; gap: 8px; }
+        .nav-links { margin-left: 0; justify-content: flex-start; gap: 11px 16px; }
+        .hero { padding-top: 42px; }
+        .video-grid,
+        .highlights,
+        .task-grid { grid-template-columns: 1fr; }
+        .section { padding: 42px 18px; }
       }
     </style>
   </head>
   <body>
-    <main>
-      <h1>Behavior Uncloning</h1>
-      <p class="subtitle">Distilling Mode Redirection into Policy Weights without Inference-Time Steering</p>
-      <div class="links">
-        <a class="button" href="https://github.com/haohww/behavior-uncloning">Code</a>
-        <a class="button" href="#citation">Citation</a>
+    <nav class="nav">
+      <div class="nav-inner">
+        <a class="brand" href="#top">Behavior Uncloning</a>
+        <div class="nav-links">
+          <a href="#abstract">Abstract</a>
+          <a href="#method">Method</a>
+          <a href="#robots">Real Robots</a>
+          <a href="#results">Results</a>
+          <a href="#code">Code</a>
+        </div>
       </div>
-      <h2>Abstract</h2>
-      <p class="abstract">
-        Behavior-cloned robot policies often learn multiple behavior modes from diverse
-        demonstrations, including modes that are unsafe or undesired at deployment. Behavior
-        Uncloning studies how to edit an already-trained mixed-mode policy so it completes the
-        task through an acceptable behavior mode. MoRE trains a temporary mode classifier,
-        uses it to provide a differentiable mode-redirection signal during a short editing stage,
-        preserves desired-mode competence with a retain loss, and then discards the classifier.
-        The edited policy runs through the original inference path without inference-time steering.
-      </p>
-      <p class="notice">
-        Paper and project assets will be added after the public release. This placeholder intentionally
-        does not host the draft submission PDF.
-      </p>
-      <h2>Code Release</h2>
-      <p>
-        The repository currently provides compact MoRE utilities, a minimal synthetic example, and
-        focused tests for the method-defining losses and Diffusion Policy feature path.
-      </p>
-      <h2 id="citation">Citation</h2>
-      <p>Citation information will be added after release.</p>
+    </nav>
+
+    <main id="top">
+      <section class="hero">
+        <div class="eyebrow">CoRL 2026 submission</div>
+        <h1>Behavior Uncloning</h1>
+        <p class="subtitle">Distilling Mode Redirection into Policy Weights without Inference-Time Steering</p>
+        <p class="hero-note">
+          MoRE edits a mixed-mode behavior-cloned policy into a standalone desired-mode policy.
+          The temporary classifier is used only during editing; deployment keeps the original policy inference path.
+        </p>
+        <div class="cta">
+          <a class="button" href="https://github.com/haohww/behavior-uncloning">Code</a>
+          <a class="button secondary" href="#supplementary">Supplementary video</a>
+          <a class="button secondary" href="#citation">Citation</a>
+        </div>
+
+        <div class="video-grid" aria-label="Featured robot rollouts">
+          <article class="video-card">
+            <div class="video-wrap">
+              <video muted loop playsinline preload="metadata" poster="assets/images/knife_handover_poster.jpg" src="assets/videos/knife_handover.mp4"></video>
+              <button class="fs" type="button" aria-label="Fullscreen video">fullscreen</button>
+            </div>
+            <div class="card-body">
+              <h3>Knife handover</h3>
+              <p>Redirect toward the deployment-safe handover mode.</p>
+            </div>
+          </article>
+          <article class="video-card">
+            <div class="video-wrap">
+              <video muted loop playsinline preload="metadata" poster="assets/images/bottle_placement_poster.jpg" src="assets/videos/bottle_placement.mp4"></video>
+              <button class="fs" type="button" aria-label="Fullscreen video">fullscreen</button>
+            </div>
+            <div class="card-body">
+              <h3>Bottle placement</h3>
+              <p>Preserve one or multiple acceptable placement modes.</p>
+            </div>
+          </article>
+          <article class="video-card">
+            <div class="video-wrap">
+              <video muted loop playsinline preload="metadata" poster="assets/images/block_obstacle_poster.jpg" src="assets/videos/block_obstacle.mp4"></video>
+              <button class="fs" type="button" aria-label="Fullscreen video">fullscreen</button>
+            </div>
+            <div class="card-body">
+              <h3>Obstacle pick-and-place</h3>
+              <p>Suppress undesired routes while preserving task completion.</p>
+            </div>
+          </article>
+          <article class="video-card">
+            <div class="video-wrap">
+              <video muted loop playsinline preload="metadata" poster="assets/images/knife_placement_poster.jpg" src="assets/videos/knife_placement.mp4"></video>
+              <button class="fs" type="button" aria-label="Fullscreen video">fullscreen</button>
+            </div>
+            <div class="card-body">
+              <h3>Knife placement</h3>
+              <p>Edit mode choice without adding an inference-time module.</p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="abstract" class="section narrow">
+        <div class="section-kicker">Abstract</div>
+        <h2>Post-hoc mode control for mixed-mode robot policies.</h2>
+        <div class="abstract">
+          <p>
+            Behavior-cloned policies often learn multiple behavior modes from demonstration datasets,
+            including modes that are unsafe or otherwise undesired at deployment. Standard remedies
+            such as data curation and inference-time steering either require access to the original
+            demonstrations for full retraining or add substantial inference-time overhead.
+          </p>
+          <p>
+            MoRE redirects policy rollouts toward desired behavior modes through a short uncloning
+            step. It trains a temporary behavior-mode classifier, backpropagates a classifier-guided
+            redirection loss into the policy weights, balances the edit with a retain loss on desired
+            samples, and then discards the classifier. Across simulated and real-world tasks, MoRE
+            improves deployment success while preserving the original inference speed.
+          </p>
+        </div>
+        <div class="highlights">
+          <article class="stat-card">
+            <div class="stat">44</div>
+            <p>percentage-point average SR improvement over the original mixed policy.</p>
+          </article>
+          <article class="stat-card">
+            <div class="stat">8</div>
+            <p>simulated and real-world tasks across manipulation and navigation.</p>
+          </article>
+          <article class="stat-card">
+            <div class="stat">&lt;500</div>
+            <p>editing gradient steps per target setting in the reported experiments.</p>
+          </article>
+          <article class="stat-card">
+            <div class="stat">0x</div>
+            <p>extra inference-time steering overhead after the policy edit.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="method" class="section left">
+        <div class="section-kicker">Method</div>
+        <h2>A classifier guides the edit, then disappears.</h2>
+        <p class="lead">
+          MoRE treats behavior mode control as a policy editing problem. It uses mode-labeled examples
+          to learn where the original policy's rollouts point, then distills the desired redirection into
+          the policy weights.
+        </p>
+        <div class="method-flow">
+          <article class="method-card">
+            <div class="num">1</div>
+            <h3>Train a mode classifier</h3>
+            <p>Fit a K-way classifier on cached features from the original mixed policy.</p>
+          </article>
+          <div class="arrow">→</div>
+          <article class="method-card">
+            <div class="num">2</div>
+            <h3>Redirect undesired samples</h3>
+            <p>Push classifier probability mass toward the desired mode set using differentiable policy features.</p>
+          </article>
+          <div class="arrow">→</div>
+          <article class="method-card">
+            <div class="num">3</div>
+            <h3>Retain desired competence</h3>
+            <p>Keep the original behavior-cloning loss on desired-mode samples and deploy the edited policy alone.</p>
+          </article>
+        </div>
+        <div class="equation">
+          L<sub>MoRE</sub> = retain_loss(desired samples) + gamma · redirect_loss(gated undesired samples)
+        </div>
+      </section>
+
+      <section id="robots" class="section left">
+        <div class="section-kicker">Real robot deployment</div>
+        <h2>Mode edits transfer to physical robot tasks.</h2>
+        <p class="lead">
+          We evaluate on four real-robot tasks with a Franka Research 3 arm. MoRE shifts rollouts
+          toward requested behavior modes while preserving task competence.
+        </p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Task</th>
+                <th>Mode change</th>
+                <th>Original SR / TCR</th>
+                <th>MoRE SR / TCR</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Place-Knife</td>
+                <td>2 → 1</td>
+                <td class="metric">40.0 / 80.0</td>
+                <td class="metric">80.0 / 80.0</td>
+              </tr>
+              <tr class="ours">
+                <td>Place-Bottle</td>
+                <td>3 → 1</td>
+                <td class="metric">31.7 / 95.0</td>
+                <td class="metric">96.7 / 96.7</td>
+              </tr>
+              <tr>
+                <td>Block-Obstacle</td>
+                <td>2 → 1</td>
+                <td class="metric">47.5 / 95.0</td>
+                <td class="metric">92.5 / 92.5</td>
+              </tr>
+              <tr>
+                <td>Knife-Handover (VLA)</td>
+                <td>2 → 1</td>
+                <td class="metric">45.0 / 90.0</td>
+                <td class="metric">70.0 / 85.0</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="results" class="section left">
+        <div class="section-kicker">Simulation benchmark</div>
+        <h2>Redirect mode choice without changing the inference path.</h2>
+        <p class="lead">
+          MoRE improves deployment success rate across Diffusion Policy benchmarks and approaches
+          filtered-data retraining, while CPL and inference-time guidance baselines only partially shift modes.
+        </p>
+        <div class="task-grid">
+          <article class="image-card">
+            <img src="assets/images/pusht_traj.png" alt="Push-T trajectory modes">
+            <div class="card-body">
+              <h3>Push-T</h3>
+              <p>SR: 50.0 → 98.3</p>
+            </div>
+          </article>
+          <article class="image-card">
+            <img src="assets/images/push_wall_traj.png" alt="Push around wall trajectory modes">
+            <div class="card-body">
+              <h3>Push-Wall</h3>
+              <p>SR: 37.0 → 80.7</p>
+            </div>
+          </article>
+          <article class="image-card">
+            <img src="assets/images/push_pillars_traj.png" alt="Push around pillars trajectory modes">
+            <div class="card-body">
+              <h3>Push-Pillars</h3>
+              <p>SR: 21.5 → 72.3</p>
+            </div>
+          </article>
+          <article class="image-card">
+            <img src="assets/images/quadruped_traj.png" alt="Quadruped navigation trajectory modes">
+            <div class="card-body">
+              <h3>Quadruped</h3>
+              <p>SR: 50.0 → 84.3</p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="supplementary" class="section narrow">
+        <div class="section-kicker">Supplementary video</div>
+        <h2>Additional rollouts and task examples.</h2>
+        <p class="lead">
+          The full supplementary video is included below with metadata preload so the page stays lightweight
+          until playback.
+        </p>
+        <div class="wide-video">
+          <div class="video-wrap">
+            <video controls preload="metadata" poster="assets/images/supp_video_final_poster.jpg" src="assets/videos/supp_video_final.mp4"></video>
+          </div>
+        </div>
+      </section>
+
+      <section id="code" class="section narrow">
+        <div class="section-kicker">Code</div>
+        <h2>Compact MoRE release.</h2>
+        <p class="lead">
+          The repository contains the method-defining MoRE losses, classifier utilities, a policy-agnostic
+          trainer skeleton, a Diffusion Policy feature path, tests, and a minimal synthetic example.
+        </p>
+        <div class="cta">
+          <a class="button" href="https://github.com/haohww/behavior-uncloning">Open GitHub repository</a>
+        </div>
+        <div id="citation" class="citation">
+@misc{behavior_uncloning_2026,<br>
+&nbsp;&nbsp;title = {Behavior Uncloning: Distilling Mode Redirection into Policy Weights without Inference-Time Steering},<br>
+&nbsp;&nbsp;year = {2026},<br>
+&nbsp;&nbsp;note = {Citation will be updated after public release}<br>
+}
+        </div>
+      </section>
     </main>
+
+    <footer>
+      Behavior Uncloning · Project page placeholder pending public paper release.
+    </footer>
+
+    <script>
+      for (const video of document.querySelectorAll("video[loop]")) {
+        video.addEventListener("mouseenter", () => video.play().catch(() => {}));
+        video.addEventListener("mouseleave", () => video.pause());
+        video.addEventListener("dblclick", () => {
+          if (video.requestFullscreen) video.requestFullscreen();
+        });
+      }
+      for (const button of document.querySelectorAll(".fs")) {
+        button.addEventListener("click", () => {
+          const video = button.parentElement.querySelector("video");
+          if (video && video.requestFullscreen) video.requestFullscreen();
+        });
+      }
+    </script>
   </body>
 </html>
