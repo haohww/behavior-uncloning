@@ -633,6 +633,196 @@
         font-size: 0.9rem;
       }
 
+      .quad-replay-shell {
+        max-width: 1320px;
+        margin: 30px auto 0;
+        display: grid;
+        grid-template-columns: 340px minmax(0, 1fr);
+        border: 1px solid var(--rule);
+        border-radius: 8px;
+        background: var(--card);
+        overflow: hidden;
+      }
+      .quad-replay-panel {
+        padding: 22px;
+        border-right: 1px solid var(--rule);
+        background: #fbfdfc;
+      }
+      .quad-replay-panel h3,
+      .quad-replay-head h3 {
+        margin: 0;
+        font-size: 1.05rem;
+        line-height: 1.3;
+      }
+      .quad-replay-panel p {
+        margin: 8px 0 0;
+        color: var(--muted);
+        font-size: 0.92rem;
+        text-wrap: pretty;
+      }
+      .quad-control-group {
+        margin-top: 20px;
+      }
+      .quad-control-group h4,
+      .quad-control-label {
+        display: block;
+        margin: 0 0 8px;
+        color: var(--muted);
+        font-family: var(--mono);
+        font-size: 0.76rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+      .quad-route-grid,
+      .quad-action-row {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+      }
+      .quad-route,
+      .quad-action,
+      .quad-select {
+        min-height: 40px;
+        border: 1px solid var(--rule);
+        border-radius: 999px;
+        background: transparent;
+        color: var(--ink-soft);
+        font: inherit;
+        font-size: 0.9rem;
+      }
+      .quad-route,
+      .quad-action {
+        cursor: pointer;
+      }
+      .quad-route[aria-pressed="true"],
+      .quad-action.primary {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: white;
+      }
+      .quad-action:hover,
+      .quad-route:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+      .quad-action.primary:hover {
+        color: white;
+      }
+      .quad-select {
+        width: 100%;
+        padding: 0 14px;
+        border-radius: 8px;
+        background: var(--card);
+      }
+      .quad-stat-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+      .quad-stat {
+        padding: 12px;
+        border-radius: 8px;
+        background: var(--tint);
+      }
+      .quad-stat span {
+        display: block;
+        color: var(--muted);
+        font-size: 0.76rem;
+      }
+      .quad-stat strong {
+        display: block;
+        margin-top: 2px;
+        color: var(--ink);
+        font-family: var(--mono);
+        font-size: 0.9rem;
+        white-space: nowrap;
+      }
+      .quad-replay-visual {
+        min-width: 0;
+        padding: 22px;
+      }
+      .quad-replay-head {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 14px;
+      }
+      .quad-replay-head p {
+        margin: 4px 0 0;
+        color: var(--muted);
+        font-size: 0.92rem;
+        text-wrap: balance;
+      }
+      .quad-replay-badge {
+        flex: none;
+        border-radius: 999px;
+        background: var(--accent-soft);
+        color: var(--accent);
+        font-family: var(--mono);
+        font-size: 0.74rem;
+        font-weight: 600;
+        padding: 7px 10px;
+      }
+      .quad-canvas-frame {
+        position: relative;
+        overflow: hidden;
+        border: 1px solid var(--rule);
+        border-radius: 8px;
+        background: #edf5f2;
+      }
+      .quad-canvas-frame canvas {
+        display: block;
+        width: 100%;
+        aspect-ratio: 16 / 9;
+      }
+      .quad-loading {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        background: rgba(237, 245, 242, 0.86);
+        color: var(--muted);
+        font-family: var(--mono);
+        font-size: 0.82rem;
+      }
+      .quad-loading.hidden {
+        display: none;
+      }
+      .quad-legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px 16px;
+        margin-top: 12px;
+        color: var(--muted);
+        font-size: 0.86rem;
+      }
+      .quad-legend span {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+      }
+      .quad-swatch {
+        width: 22px;
+        height: 3px;
+        border-radius: 999px;
+        background: var(--accent);
+      }
+      .quad-swatch.left { background: #236c9c; }
+      .quad-swatch.right { background: #b84d5a; }
+      .quad-swatch.current { height: 7px; background: var(--accent); }
+      .quad-swatch.pillar {
+        width: 10px;
+        height: 10px;
+        background: #6c5846;
+      }
+      .quad-swatch.goal {
+        width: 10px;
+        height: 10px;
+        background: #4aa86b;
+      }
+
       .table-wrap {
         margin-top: 26px;
         overflow-x: auto;
@@ -719,6 +909,8 @@
         .demo-shell { grid-template-columns: 1fr; }
         .demo-controls { border-right: 0; border-bottom: 1px solid var(--rule); }
         .demo-button-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+        .quad-replay-shell { grid-template-columns: 1fr; }
+        .quad-replay-panel { border-right: 0; border-bottom: 1px solid var(--rule); }
         .demo-media-grid,
         .demo-bars { grid-template-columns: 1fr; }
         .arrow { display: none; }
@@ -734,6 +926,12 @@
         .demo-controls,
         .demo-visual { padding: 16px; }
         .demo-button-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .quad-replay-panel,
+        .quad-replay-visual { padding: 16px; }
+        .quad-replay-head { flex-direction: column; gap: 8px; }
+        .quad-action-row,
+        .quad-route-grid,
+        .quad-stat-grid { grid-template-columns: 1fr; }
         .demo-visual-head { flex-direction: column; gap: 8px; }
         .demo-metrics { grid-template-columns: 1fr; }
       }
@@ -979,6 +1177,84 @@
           </table>
         </div>
         <p class="table-note">Values report average deployment success rate (SR) and task completion rate (TCR) over target modes.</p>
+        <div class="quad-replay-shell" id="quadruped-replay">
+          <aside class="quad-replay-panel" aria-label="Quadruped replay controls">
+            <h3>Quadruped trajectory replay</h3>
+            <p>
+              Replay recorded Go1 base poses from the one-pillar navigation task.
+              This is a browser-side trajectory replay, not a live physics simulator.
+            </p>
+            <div class="quad-control-group">
+              <h4>Route</h4>
+              <div class="quad-route-grid" role="tablist" aria-label="Quadruped route selector">
+                <button class="quad-route" type="button" aria-pressed="true" data-quad-mode="left">Left route</button>
+                <button class="quad-route" type="button" aria-pressed="false" data-quad-mode="right">Right route</button>
+              </div>
+            </div>
+            <div class="quad-control-group">
+              <label class="quad-control-label" for="quad-rollout-select">Rollout seed</label>
+              <select class="quad-select" id="quad-rollout-select" aria-label="Quadruped rollout seed"></select>
+            </div>
+            <div class="quad-control-group">
+              <label class="quad-control-label" for="quad-speed-select">Playback speed</label>
+              <select class="quad-select" id="quad-speed-select" aria-label="Quadruped replay speed">
+                <option value="0.5">0.5x</option>
+                <option value="1" selected>1x</option>
+                <option value="1.5">1.5x</option>
+                <option value="2">2x</option>
+              </select>
+            </div>
+            <div class="quad-control-group">
+              <div class="quad-action-row">
+                <button class="quad-action primary" type="button" id="quad-play-toggle">Pause</button>
+                <button class="quad-action" type="button" id="quad-reset">Reset</button>
+              </div>
+            </div>
+            <div class="quad-control-group">
+              <div class="quad-stat-grid">
+                <div class="quad-stat">
+                  <span>Step</span>
+                  <strong id="quad-step">0 / 0</strong>
+                </div>
+                <div class="quad-stat">
+                  <span>Pose</span>
+                  <strong id="quad-pose">x 0.00 · y 0.00</strong>
+                </div>
+                <div class="quad-stat">
+                  <span>Yaw</span>
+                  <strong id="quad-yaw">0.00 rad</strong>
+                </div>
+                <div class="quad-stat">
+                  <span>Goal</span>
+                  <strong id="quad-goal">x 4.50 · y 0.00</strong>
+                </div>
+              </div>
+            </div>
+            <p class="demo-note">
+              The replay asset contains 20 successful rollout traces exported from the quadruped evaluation logs.
+            </p>
+          </aside>
+          <div class="quad-replay-visual">
+            <div class="quad-replay-head">
+              <div>
+                <h3>Go1 one-pillar navigation</h3>
+                <p id="quad-status">Loading recorded rollout trajectories.</p>
+              </div>
+              <span class="quad-replay-badge">recorded poses</span>
+            </div>
+            <div class="quad-canvas-frame">
+              <canvas id="quad-canvas" aria-label="Animated quadruped rollout trajectory replay"></canvas>
+              <div class="quad-loading" id="quad-loading">Loading recorded rollouts...</div>
+            </div>
+            <div class="quad-legend" aria-label="Quadruped replay legend">
+              <span><i class="quad-swatch left"></i>left rollouts</span>
+              <span><i class="quad-swatch right"></i>right rollouts</span>
+              <span><i class="quad-swatch current"></i>selected replay</span>
+              <span><i class="quad-swatch pillar"></i>pillar</span>
+              <span><i class="quad-swatch goal"></i>goal</span>
+            </div>
+          </div>
+        </div>
       </section>
 
       <section id="robots" class="section left">
@@ -1202,6 +1478,364 @@
         renderDemoControls();
         renderDemo();
       }
+
+      const initQuadrupedReplay = () => {
+        const root = document.getElementById("quadruped-replay");
+        if (!root) return;
+
+        const canvas = document.getElementById("quad-canvas");
+        const ctx = canvas.getContext("2d");
+        const loading = document.getElementById("quad-loading");
+        const status = document.getElementById("quad-status");
+        const rolloutSelect = document.getElementById("quad-rollout-select");
+        const speedSelect = document.getElementById("quad-speed-select");
+        const playToggle = document.getElementById("quad-play-toggle");
+        const resetButton = document.getElementById("quad-reset");
+        const routeButtons = Array.from(root.querySelectorAll("[data-quad-mode]"));
+        const stepEl = document.getElementById("quad-step");
+        const poseEl = document.getElementById("quad-pose");
+        const yawEl = document.getElementById("quad-yaw");
+        const goalEl = document.getElementById("quad-goal");
+        const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+        const state = {
+          data: null,
+          mode: "left",
+          rolloutIndex: 0,
+          progress: 0,
+          speed: Number(speedSelect.value),
+          playing: !reducedMotion.matches,
+          lastTs: null,
+          cssWidth: 0,
+          cssHeight: 0
+        };
+
+        const colors = {
+          left: "#236c9c",
+          right: "#b84d5a",
+          current: "#0c7278",
+          ink: "#17211d",
+          muted: "#687772",
+          rule: "#c9d8d2",
+          goal: "#4aa86b",
+          pillar: "#6c5846"
+        };
+
+        const resizeCanvas = () => {
+          const rect = canvas.getBoundingClientRect();
+          const dpr = Math.min(window.devicePixelRatio || 1, 2);
+          const width = Math.max(320, rect.width);
+          const height = Math.max(220, rect.height || width * 9 / 16);
+          state.cssWidth = width;
+          state.cssHeight = height;
+          const pixelWidth = Math.round(width * dpr);
+          const pixelHeight = Math.round(height * dpr);
+          if (canvas.width !== pixelWidth || canvas.height !== pixelHeight) {
+            canvas.width = pixelWidth;
+            canvas.height = pixelHeight;
+          }
+          ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        };
+
+        const selectedRollout = () => {
+          if (!state.data) return null;
+          const rollouts = state.data.rollouts[state.mode] || [];
+          return rollouts[state.rolloutIndex] || rollouts[0] || null;
+        };
+
+        const layout = () => {
+          const scene = state.data.scene;
+          const [xMin, xMax] = scene.x_range;
+          const [yMin, yMax] = scene.y_range;
+          const margin = { left: 58, right: 30, top: 30, bottom: 46 };
+          const innerW = state.cssWidth - margin.left - margin.right;
+          const innerH = state.cssHeight - margin.top - margin.bottom;
+          const scale = Math.min(innerW / (xMax - xMin), innerH / (yMax - yMin));
+          const plotW = (xMax - xMin) * scale;
+          const plotH = (yMax - yMin) * scale;
+          const originX = margin.left + (innerW - plotW) / 2 - xMin * scale;
+          const originY = margin.top + (innerH - plotH) / 2 + yMax * scale;
+
+          return {
+            xMin,
+            xMax,
+            yMin,
+            yMax,
+            scale,
+            left: originX + xMin * scale,
+            right: originX + xMax * scale,
+            top: originY - yMax * scale,
+            bottom: originY - yMin * scale,
+            toScreen: ([x, y]) => [originX + x * scale, originY - y * scale]
+          };
+        };
+
+        const drawPath = (points, color, lineWidth, alpha, maxIndex = points.length - 1) => {
+          if (!points || points.length < 2) return;
+          const view = layout();
+          const end = Math.max(1, Math.min(points.length - 1, maxIndex));
+          ctx.save();
+          ctx.globalAlpha = alpha;
+          ctx.strokeStyle = color;
+          ctx.lineWidth = lineWidth;
+          ctx.lineJoin = "round";
+          ctx.lineCap = "round";
+          ctx.beginPath();
+          const [sx, sy] = view.toScreen(points[0]);
+          ctx.moveTo(sx, sy);
+          for (let i = 1; i <= end; i += 1) {
+            const [x, y] = view.toScreen(points[i]);
+            ctx.lineTo(x, y);
+          }
+          ctx.stroke();
+          ctx.restore();
+        };
+
+        const drawGrid = () => {
+          const view = layout();
+          ctx.fillStyle = "#edf5f2";
+          ctx.fillRect(0, 0, state.cssWidth, state.cssHeight);
+          ctx.strokeStyle = colors.rule;
+          ctx.lineWidth = 1;
+          ctx.font = "12px Inter, sans-serif";
+          ctx.fillStyle = colors.muted;
+          ctx.textAlign = "center";
+          ctx.textBaseline = "top";
+
+          for (let x = 0.5; x <= 5.0; x += 0.5) {
+            const [sx] = view.toScreen([x, 0]);
+            ctx.beginPath();
+            ctx.moveTo(sx, view.top);
+            ctx.lineTo(sx, view.bottom);
+            ctx.stroke();
+            ctx.fillText(x.toFixed(1), sx, view.bottom + 10);
+          }
+
+          ctx.textAlign = "right";
+          ctx.textBaseline = "middle";
+          for (let y = -1.0; y <= 1.0; y += 0.5) {
+            const [, sy] = view.toScreen([0, y]);
+            ctx.beginPath();
+            ctx.moveTo(view.left, sy);
+            ctx.lineTo(view.right, sy);
+            ctx.stroke();
+            ctx.fillText(y.toFixed(1), view.left - 10, sy);
+          }
+
+          ctx.strokeStyle = "#9fb4ad";
+          ctx.lineWidth = 1.2;
+          ctx.strokeRect(view.left, view.top, view.right - view.left, view.bottom - view.top);
+          ctx.textAlign = "center";
+          ctx.fillText("x [m]", (view.left + view.right) / 2, state.cssHeight - 20);
+        };
+
+        const drawSceneObjects = (rollout) => {
+          const view = layout();
+          const pillar = rollout.pillar_xy || [2.5, 0.0];
+          const goal = rollout.goal_xy || [4.5, 0.0];
+          const [px, py] = view.toScreen(pillar);
+          const [gx, gy] = view.toScreen(goal);
+
+          ctx.save();
+          ctx.fillStyle = colors.pillar;
+          ctx.globalAlpha = 0.9;
+          ctx.beginPath();
+          ctx.arc(px, py, state.data.scene.pillar_radius * view.scale, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = colors.goal;
+          ctx.globalAlpha = 0.55;
+          ctx.beginPath();
+          ctx.arc(gx, gy, state.data.scene.goal_radius * view.scale, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.globalAlpha = 1;
+          ctx.font = "12px Inter, sans-serif";
+          ctx.fillStyle = colors.ink;
+          ctx.textAlign = "center";
+          ctx.textBaseline = "bottom";
+          ctx.fillText("pillar", px, py - state.data.scene.pillar_radius * view.scale - 8);
+          ctx.fillText("goal", gx, gy - state.data.scene.goal_radius * view.scale - 8);
+          ctx.restore();
+        };
+
+        const interpolatePose = (rollout) => {
+          const points = rollout.points;
+          const i = Math.min(points.length - 2, Math.max(0, Math.floor(state.progress)));
+          const t = Math.min(1, Math.max(0, state.progress - i));
+          const a = points[i];
+          const b = points[i + 1];
+          let dyaw = b[2] - a[2];
+          if (dyaw > Math.PI) dyaw -= Math.PI * 2;
+          if (dyaw < -Math.PI) dyaw += Math.PI * 2;
+          return [
+            a[0] + (b[0] - a[0]) * t,
+            a[1] + (b[1] - a[1]) * t,
+            a[2] + dyaw * t,
+            i
+          ];
+        };
+
+        const drawRobot = (pose) => {
+          const view = layout();
+          const [x, y, yaw, step] = pose;
+          const [sx, sy] = view.toScreen([x, y]);
+          const bodyL = 34;
+          const bodyW = 18;
+          const phase = Math.sin(step * 0.34) * 3;
+
+          ctx.save();
+          ctx.translate(sx, sy);
+          ctx.rotate(-yaw);
+          ctx.strokeStyle = colors.ink;
+          ctx.lineWidth = 3;
+          ctx.lineCap = "round";
+          const legs = [
+            [-bodyL * 0.32, -bodyW * 0.45, -bodyL * 0.46, -bodyW * 0.95 - phase],
+            [bodyL * 0.32, -bodyW * 0.45, bodyL * 0.46, -bodyW * 0.95 + phase],
+            [-bodyL * 0.32, bodyW * 0.45, -bodyL * 0.46, bodyW * 0.95 + phase],
+            [bodyL * 0.32, bodyW * 0.45, bodyL * 0.46, bodyW * 0.95 - phase]
+          ];
+          for (const [x0, y0, x1, y1] of legs) {
+            ctx.beginPath();
+            ctx.moveTo(x0, y0);
+            ctx.lineTo(x1, y1);
+            ctx.stroke();
+          }
+          ctx.fillStyle = "#ffffff";
+          ctx.strokeStyle = colors.ink;
+          ctx.lineWidth = 1.4;
+          ctx.fillRect(-bodyL / 2, -bodyW / 2, bodyL, bodyW);
+          ctx.strokeRect(-bodyL / 2, -bodyW / 2, bodyL, bodyW);
+          ctx.fillStyle = colors.current;
+          ctx.fillRect(bodyL * 0.04, -bodyW / 2, bodyL * 0.46, bodyW);
+          ctx.beginPath();
+          ctx.moveTo(bodyL / 2 + 10, 0);
+          ctx.lineTo(bodyL / 2 - 3, -6);
+          ctx.lineTo(bodyL / 2 - 3, 6);
+          ctx.closePath();
+          ctx.fill();
+          ctx.restore();
+        };
+
+        const updateReadout = (rollout, pose) => {
+          const [x, y, yaw, step] = pose;
+          const goal = rollout.goal_xy || [4.5, 0.0];
+          stepEl.textContent = `${step + 1} / ${rollout.points.length}`;
+          poseEl.textContent = `${x.toFixed(2)}, ${y.toFixed(2)}`;
+          yawEl.textContent = `${yaw.toFixed(2)} rad`;
+          goalEl.textContent = `${goal[0].toFixed(2)}, ${goal[1].toFixed(2)}`;
+          status.textContent = `${state.mode === "left" ? "Left" : "Right"} route · seed ${rollout.seed} · ${rollout.points.length} recorded poses`;
+        };
+
+        const draw = () => {
+          if (!state.data) return;
+          resizeCanvas();
+          const rollout = selectedRollout();
+          if (!rollout) return;
+
+          drawGrid();
+          for (const [mode, traces] of Object.entries(state.data.rollouts)) {
+            for (const trace of traces) {
+              drawPath(trace.points, colors[mode], 1.2, mode === state.mode ? 0.22 : 0.10);
+            }
+          }
+          drawSceneObjects(rollout);
+          drawPath(rollout.points, colors.current, 2.6, 0.42);
+          drawPath(rollout.points, colors.current, 4.4, 0.95, Math.floor(state.progress));
+          const pose = interpolatePose(rollout);
+          drawRobot(pose);
+          updateReadout(rollout, pose);
+        };
+
+        const syncControls = () => {
+          for (const button of routeButtons) {
+            button.setAttribute("aria-pressed", button.dataset.quadMode === state.mode ? "true" : "false");
+          }
+          playToggle.textContent = state.playing ? "Pause" : "Play";
+          playToggle.classList.toggle("primary", state.playing);
+        };
+
+        const populateRolloutSelect = () => {
+          const rollouts = state.data.rollouts[state.mode] || [];
+          state.rolloutIndex = Math.min(state.rolloutIndex, Math.max(0, rollouts.length - 1));
+          rolloutSelect.innerHTML = rollouts.map((rollout, index) =>
+            `<option value="${index}">seed ${rollout.seed} · ${rollout.points.length} poses</option>`
+          ).join("");
+          rolloutSelect.value = String(state.rolloutIndex);
+        };
+
+        const resetReplay = () => {
+          state.progress = 0;
+          state.lastTs = null;
+          draw();
+        };
+
+        const animate = (ts) => {
+          const rollout = selectedRollout();
+          if (rollout) {
+            if (state.lastTs === null) state.lastTs = ts;
+            const dt = Math.min(0.05, (ts - state.lastTs) / 1000);
+            state.lastTs = ts;
+            if (state.playing) {
+              state.progress += dt * state.data.sample_rate_hz * state.speed;
+              if (state.progress >= rollout.points.length - 1) {
+                state.progress = 0;
+              }
+            }
+            draw();
+          }
+          window.requestAnimationFrame(animate);
+        };
+
+        for (const button of routeButtons) {
+          button.addEventListener("click", () => {
+            state.mode = button.dataset.quadMode;
+            state.rolloutIndex = 0;
+            populateRolloutSelect();
+            resetReplay();
+            syncControls();
+          });
+        }
+
+        rolloutSelect.addEventListener("change", () => {
+          state.rolloutIndex = Number(rolloutSelect.value);
+          resetReplay();
+        });
+        speedSelect.addEventListener("change", () => {
+          state.speed = Number(speedSelect.value);
+        });
+        playToggle.addEventListener("click", () => {
+          state.playing = !state.playing;
+          state.lastTs = null;
+          syncControls();
+        });
+        resetButton.addEventListener("click", resetReplay);
+        canvas.addEventListener("click", () => {
+          state.playing = !state.playing;
+          state.lastTs = null;
+          syncControls();
+        });
+        window.addEventListener("resize", draw);
+
+        fetch("assets/data/quadruped_rollouts.json")
+          .then((response) => {
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            return response.json();
+          })
+          .then((data) => {
+            state.data = data;
+            loading.classList.add("hidden");
+            populateRolloutSelect();
+            syncControls();
+            draw();
+            window.requestAnimationFrame(animate);
+          })
+          .catch(() => {
+            loading.textContent = "Could not load recorded rollout data.";
+            status.textContent = "Recorded rollout data could not be loaded.";
+          });
+      };
+
+      initQuadrupedReplay();
 
       const carouselData = {
         robots: [
